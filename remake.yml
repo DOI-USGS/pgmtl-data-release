@@ -1,0 +1,166 @@
+
+include:
+  - 5_predictions.yml
+  - 3_config.yml
+
+packages:
+  - yaml
+  - whisker
+  - dplyr
+  - tidyr
+  - meddle # at least v0.0.8
+  - readr
+  - feather
+  - httr
+  - rgdal
+  - stringr
+  - glmtools
+  - sp
+  - RJSONIO
+  - sbtools
+  - RcppCNPy
+  - purrr
+  - dssecrets
+
+sources:
+  - src/spatial_utils.R
+  - src/sb_utils.R
+
+targets:
+  all:
+    depends:
+      - 00_parent_sb_xml
+      - 01_spatial_sb_xml
+      - 01_spatial_sb_shp
+      - 03_config_sb_xml
+      - 03_config_sb_data
+      - 04_inputs_sb_image
+      - 05_predictions_sb_xml
+      - 05_predictions_sb_image
+
+
+# in case you want to mess w/ the xml alone:
+  out_xml/00_parent.xml:
+    command: render(filename = target_name,
+      "in_text/text_SHARED.yml",
+      "in_text/text_00_parent.yml")
+
+  00_parent_sb_xml:
+    command: sb_render_post_xml(sbid_00_parent,
+      "in_text/text_SHARED.yml",
+      "in_text/text_00_parent.yml",
+      spatial_metadata)
+
+  01_spatial_sb_xml:
+    command: sb_render_post_xml(sbid_01_spatial,
+      "in_text/text_SHARED.yml",
+      "in_text/text_01_spatial.yml",
+      spatial_metadata)
+
+  01_spatial_sb_shp:
+    command: sb_replace_files(sbid_01_spatial,
+      "out_data/01_spatial.zip")
+
+  02_observations_sb_data:
+    command: sb_replace_files(sbid_02_observations,
+      "out_data/temperature_observations.zip")
+
+  02_observations_sb_xml:
+    command: sb_render_post_xml(sbid_02_observations,
+      "in_text/text_SHARED.yml",
+      "in_text/text_02_observations.yml",
+      spatial_metadata)
+
+  03_config_sb_xml:
+    command: sb_render_post_xml(sbid_03_config,
+      "in_text/text_SHARED.yml",
+      "in_text/text_03_config.yml",
+      spatial_metadata)
+
+  03_config_sb_data:
+    command: sb_replace_files(sbid_03_config,
+      "out_data/pb0_config.json",
+      "out_data/pball_config.json")
+
+  04_inputs_sb_xml:
+    command: sb_render_post_xml(sbid_04_inputs,
+      "in_text/text_SHARED.yml",
+      "in_text/text_04_inputs.yml")
+
+  04_inputs_sb_meteo:
+    command: sb_replace_files(sbid_04_inputs,
+      file_hash = "out/4_inputs_zips.yml")
+
+  04_inputs_sb_image:
+    command: sb_replace_files(sbid_04_inputs,
+      'out_data/input_cells.png')
+
+  04_inputs_sb_ice:
+    command: sb_replace_files(sbid_04_inputs,
+      file_hash = "out/4_ice_flags_zips.yml")
+
+  04_inputs_sb_clarity:
+    command: sb_replace_files(sbid_04_inputs,
+      file_hash = "out/4_clarity_zips.yml")
+
+  05_predictions_sb_xml:
+    command: sb_render_post_xml(sbid_05_predictions,
+      "in_text/text_SHARED.yml",
+      "in_text/text_05_predictions.yml",
+      spatial_metadata)
+
+  05_predictions_sb_image:
+    command: sb_replace_files(sbid_05_predictions,
+      'out_data/predict_lakes.png')
+
+  05_predictions_sb_pb0:
+    command: sb_replace_files(sbid_05_predictions,
+      file_hash = "out/5_predictions_zips.yml")
+
+  05_predictions_sb_irr:
+    command: sb_replace_files(sbid_05_predictions,
+      file_hash = "out/5_irradiance_zips.yml")
+
+  05_predictions_sb_pgdl:
+    command: sb_replace_files(sbid_05_predictions,
+      file_hash = "out/5_pgdl_predictions_zips.yml")
+
+  06_evaluation_sb_xml:
+    command: sb_render_post_xml(sb_id_06_evaluation,
+      "in_text/text_SHARED.yml",
+      "in_text/text_06_evaluation.yml",
+      spatial_metadata)
+
+  06_evaluation_sb_data:
+    command: sb_replace_files(sb_id_06_evaluation,
+      "out_data/pb0_matched_to_observations.zip",
+      "out_data/pb0_evaluation.csv")
+
+  06_evaluation_sb_data_pgdl:
+    command: sb_replace_files(sb_id_06_evaluation,
+      "out_data/pgdl_matched_to_observations.zip",
+      "out_data/pgdl_evaluation.csv")
+
+  # ------ SB IDs --------
+
+
+  sbid_00_parent:
+    command: c(I('5ebe542b82ce476925e44b20'))
+
+  sbid_01_spatial:
+    command: c(I('5ebe564782ce476925e44b26'))
+
+  sbid_02_observations:
+    command: c(I('5ebe566a82ce476925e44b29'))
+
+  sbid_03_config:
+    command: c(I('5ebe567782ce476925e44b2b'))
+
+  sbid_04_inputs:
+    command: c(I('5ebe568182ce476925e44b2d'))
+
+  sbid_05_predictions:
+    command: c(I('5ebe569582ce476925e44b2f'))
+
+  sb_id_06_evaluation:
+    command: c(I('5ebe577782ce476925e44b32'))

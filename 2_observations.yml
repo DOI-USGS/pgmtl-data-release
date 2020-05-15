@@ -1,0 +1,32 @@
+
+
+target_default: 2_observations
+
+packages:
+  - yaml
+  - whisker
+  - dplyr
+  - tidyr
+  - meddle
+  - readr
+  - rgdal
+  - stringr
+  - glmtools
+  - sf
+
+
+sources:
+  - src/file_utils.R
+
+targets:
+  2_observations:
+    depends:
+      - out_data/temperature_observations.zip
+
+  tmp/filtered_observations.rds:
+    command: filter_feather_obs(target_name, site_ids = modeled_lake_ids,
+      obs_start = export_start, obs_stop = export_stop,
+      obs_feather = I('../lake-temperature-model-prep/7b_temp_merge/out/temp_data_with_sources.feather'))
+
+  out_data/temperature_observations.zip:
+    command: zip_filter_obs(target_name, 'tmp/filtered_observations.rds')

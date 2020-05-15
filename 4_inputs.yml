@@ -1,0 +1,43 @@
+
+target_default: 4_inputs
+
+include:
+  - 1_spatial.yml
+
+packages:
+  - yaml
+  - whisker
+  - dplyr
+  - tidyr
+  - meddle
+  - readr
+  - rgdal
+  - stringr
+  - glmtools
+  - sf
+
+
+sources:
+  - src/file_utils.R
+  - src/spatial_utils.R
+  - src/plot_utils.R
+
+targets:
+  4_inputs:
+    depends:
+      - out_data/input_cells.png
+
+  grouped_meteo_fls:
+    command: group_meteo_fls(
+      meteo_dir = I('../lake-temperature-model-prep/7_drivers_munge/out'),
+      counties_sf = us_counties_sf,
+      use_states = I(c('MN','ND','SD','IL','WI','MI')),
+      groups = spatial_groups)
+
+
+  out_data/input_cells.png:
+    command: plot_grouped_cells_preview(target_name,
+      spatial_groups, site_ids_grouped,
+      county_bounds = us_counties_sf,
+      lakes_sf_fl = "../lake-temperature-model-prep/1_crosswalk_fetch/out/canonical_lakes_sf.rds",
+      grouped_meteo_fls = grouped_meteo_fls)

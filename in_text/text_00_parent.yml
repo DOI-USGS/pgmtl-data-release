@@ -1,0 +1,31 @@
+title: >-
+  Data release: Predicting Water Temperature Dynamics of Unmonitored Lakes with Meta Transfer Learning
+
+abstract: >-
+  <p>Climate change and land use change have been shown to influence lake temperatures and water clarity in different ways. To better understand the diversity of lake responses to
+  climate change and give managers tools to manage individual lakes, we focused on improving prediction accuracy for daily water
+  temperature profiles and opitical habitat in 2,378 lakes during 1980-2019.
+  <br/>The data are organized into these items:</p>
+  <ol>
+  <li><a href="https://www.sciencebase.gov/catalog/item/5ebe564782ce476925e44b26">Lake Information</a> - A lake metadata file and one shapefile of polygons for all 2,378 lakes in this study</li>
+  <li><a href="https://www.sciencebase.gov/catalog/item/5ebe566a82ce476925e44b29">Observations</a> - Temperature observations for X of the 2,378 lakes used in this study</li>
+  <li><a href="https://www.sciencebase.gov/catalog/item/5ebe567782ce476925e44b2b">Model Configurations</a> - Model parameters and metadata used to configure models</li>
+  <li><a href="https://www.sciencebase.gov/catalog/item/5ebe568182ce476925e44b2d">Model Inputs</a> - Data used to drive predictive models (ice-flags and daily meteorology)</li>
+  <li><a href="https://www.sciencebase.gov/catalog/item/5ebe569582ce476925e44b2f">Model Predictions</a> - Predictions for water temperature</li>
+  <li><a href="https://www.sciencebase.gov/catalog/item/5ebe577782ce476925e44b32">Model Evaluation</a> - Performance of models</li>
+  <br/>
+  <p>This research was funded by the Department of the Interior Northeast and North Central Climate Adaptation Science Centers,
+  a Midwest Glacial Lakes Fish Habitat Partnership grant through F&WS
+  Access to computing facilities was provided by USGS Advanced Research Computing, USGS Yeti Supercomputer (https://doi.org/10.5066/F7D798MJ).
+  We thank North Temperate Lakes Long-Term Ecological Research (NSF DEB-1440297) and Global Lake Ecological Observatory Network (NSF #1702991).</p>
+
+build-environment: Multiple computer systems were used to generate these data, including linux, OSX. The open source languages R and Python were used on all systems.
+
+process-date: !expr format(Sys.time(),'%Y%m%d')
+indirect-spatial: U.S.A.
+latitude-res: 0.1
+longitude-res: 0.1
+data-name: Full data release
+data-description: >-
+  This is the landing page for the other data release units, described in the attributes section
+file-format: parent data item for released data products
