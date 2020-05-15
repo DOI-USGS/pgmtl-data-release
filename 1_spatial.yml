@@ -1,0 +1,94 @@
+
+target_default: 1_spatial
+
+packages:
+  - yaml
+  - whisker
+  - dplyr
+  - tidyr
+  - meddle
+  - readr
+  - dataRetrieval
+  - yaml
+  - rgdal
+  - httr
+  - lwgeom
+  - stringr
+  - glmtools
+  - sf
+
+
+sources:
+  - src/spatial_utils.R
+  - src/file_utils.R
+  - src/group_utils.R
+
+targets:
+  1_spatial:
+    depends:
+      - out_data/01_spatial.zip
+      - out_data/lake_metadata.csv
+
+
+  us_counties_sf:
+    command: fetch_zip_url_sf(I('https://www2.census.gov/geo/tiger/GENZ2018/shp/cb_2018_us_county_5m.zip'),
+      layer_name = I('cb_2018_us_county_5m'))
+
+  # would also have pb_target, pg_source, pg_target
+#  model_export_ids:
+#    command: list(pb0 = modeled_lake_ids, pb_source = calibrated_lake_ids)
+  
+  source_ids:
+    command: extract_csv_column(filepath = '../lake-temperature-process-models/3_run/out/RMSE_transfer_glm.csv',
+      column = I('source_id'))
+  
+  target_ids:
+    command: extract_csv_column(filepath = 'in_data/pgdtl_rmse__2233Test_ens9 - pgdtl_rmse_pball_2300_ens9.csv',
+      column = I('target_id'))
+    
+  superset_release_ids:
+    command: c(source_ids, target_ids)
+
+  spatial_groups:
+    command: generate_group_rects()
+
+  modeled_lakes_sf:
+    command: subset_lake_sf(
+      lakes_sf_fl = "../lake-temperature-model-prep/1_crosswalk_fetch/out/canonical_lakes_sf.rds",
+      site_ids = superset_release_ids)
+
+  county_state_overlaps:
+    command: sf_names_from_overlap(modeled_lakes_sf, us_counties_sf)
+
+  modeled_centroids_sf:
+    command: st_centroid(modeled_lakes_sf)
+
+  site_ids_grouped:
+    command: assign_group_id(modeled_centroids_sf, spatial_groups)
+
+  ldas_grid:
+    command: create_ldas_grid()
+
+  xwalk_meteo_fl_names:
+    command: xwalk_meteo_lat_lon(meteo_fl = '../lake-temperature-model-prep/7_config_merge/out/nml_meteo_fl_values.rds',
+      meteo_dir = I('../lake-temperature-model-prep/7_drivers_munge/out'),
+      ldas_grid)
+
+  out_data/lake_metadata.csv:
+    command: create_metadata_file(target_name,
+      sites = site_ids_grouped,
+      county_state_overlaps,
+      lakes_sf = modeled_lakes_sf,
+      lat_lon_fl = '../lake-temperature-model-prep/7_config_merge/out/nml_lat_lon_values.rds',
+      meteo_fl_info = xwalk_meteo_fl_names,
+      gnis_names_fl = '../lake-temperature-model-prep/2_crosswalk_munge/out/gnisname_nhdhr_xwalk.rds')
+
+
+  spatial_metadata:
+    command: extract_feature(modeled_lakes_sf)
+
+  out_data/01_spatial.zip:
+    command: sf_to_zip(target_name,
+      sf_object = modeled_lakes_sf,
+      layer_name = I('study_lakes'))
+

@@ -1,0 +1,41 @@
+target_default: 3_config
+
+packages:
+  - yaml
+  - RJSONIO
+  - dplyr
+  - readr
+  - stringr
+  - glmtools
+  - reticulate
+
+sources:
+  - src/spatial_utils.R
+  - src/file_utils.R
+
+targets:
+  3_config:
+    depends:
+      - out_data/pb0_config.json
+      - out_data/pball_config.json
+
+
+  export_start:
+    command: c(I('1980-01-01'))
+
+  export_stop:
+    command: c(I('2019-12-31'))
+
+  out_data/pb0_config.json:
+    command: bundle_nml_files(target_name,
+      xwalk_meteo_fl_names,
+      superset_release_ids,
+      nml_ind = '../lake-temperature-process-models/2_prep/out/nml_file_group.yml',
+      gnis_names_fl = '../lake-temperature-model-prep/2_crosswalk_munge/out/gnisname_nhdhr_xwalk.rds')
+
+  out_data/pball_config.json:
+    command: bundle_nml_files(target_name,
+      xwalk_meteo_fl_names,
+      source_ids,
+      nml_ind = '../lake-temperature-process-models/2_prep/out/nml_cal_file_group.yml',
+      gnis_names_fl = '../lake-temperature-model-prep/2_crosswalk_munge/out/gnisname_nhdhr_xwalk.rds')

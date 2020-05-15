@@ -1,0 +1,39 @@
+
+target_default: 5_predictions
+
+include:
+  - 1_spatial.yml
+
+packages:
+  - yaml
+  - whisker
+  - dplyr
+  - tidyr
+  - meddle
+  - readr
+  - rgdal
+  - stringr
+  - glmtools
+  - sf
+
+sources:
+  - src/file_utils.R
+  - src/spatial_utils.R
+  - src/plot_utils.R
+
+targets:
+  5_predictions:
+    depends:
+      - out_data/predict_lakes.png
+
+# pb0 predictions are here: 3_run/sync/pb0_{site_id}_temperatures.feather
+# pball predictions are here: 3_run/sync/pball_{site_id}_temperatures.feather
+# calibrated params were cd, sw_factor, and coef_mix_hyp
+# pball configs are here: 2_prep/sync/pball_{site_id}.nml
+
+
+  out_data/predict_lakes.png:
+    command: plot_grouped_lakes_preview(target_name,
+      spatial_groups, site_ids_grouped,
+      county_bounds = us_counties_sf,
+      lakes_sf_fl = "../lake-temperature-model-prep/1_crosswalk_fetch/out/canonical_lakes_sf.rds")
