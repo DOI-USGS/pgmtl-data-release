@@ -11,24 +11,21 @@ filter_min_dates <- function(obs_rds_file, min_dates){
 }
 
 # interpolate the predictions to the depths of the observations
-match_glm_obs <- function(target_name, eval_data, model_out_ind){
+match_glm_obs <- function(target_name, eval_data, predict_df){
 
-  model_proj_dir <- paste(str_split(model_out_ind, '/')[[1]][1:2], collapse = '/')
-  eval_site_ids <- unique(eval_data$site_id)
+  file_info <- predict_df %>% select(site_id, source_filepath) %>% 
+    filter(!site_id %in% c('nhdhr_120019294'))
 
-  file_info <- tibble(file = names(yaml.load_file(model_out_ind))) %>% split_pb_filenames() %>%
-    mutate(source_filepath = file.path(model_proj_dir, file)) %>%
-    filter(site_id %in% eval_site_ids) %>% select(site_id, source_filepath)
-
+  message('pb0_nhdhr_120019294_temperatures.feather only has sims through 1993')
   purrr::map(1:nrow(file_info), function(x){
     this_file <- file_info$source_filepath[x]
     this_id <- file_info$site_id[x]
     these_obs <- eval_data %>% filter(site_id %in% this_id)
-    model_preds <- feather::read_feather(this_file) %>% select(time, contains('temp_')) %>%
+    model_preds <- feather::read_feather(this_file) %>% 
+      mutate(time = as.Date(lubridate::ceiling_date(DateTime, 'days'))) %>% select(time, contains('temp_')) %>%
       pivot_longer(-time, names_to = 'depth', values_to = 'temp', names_prefix = 'temp_') %>%
       mutate(depth = as.numeric(depth)) %>% filter(time %in% these_obs$date) %>%
       rename(date = time, pred = temp)
-
     prep_pred_obs(test_obs = these_obs, model_preds = model_preds) %>%
       select(site_id, date, depth, obs, pred)
   }) %>% purrr::reduce(bind_rows)

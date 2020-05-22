@@ -23,10 +23,13 @@ targets:
     depends:
       - out_data/temperature_observations.zip
 
+# in_data/hyperscales_temperature_observations.csv was downloaded from https://www.sciencebase.gov/catalog/item/5db81985e4b0b0c58b5a4c41
+# as the "03_temperature_observations.zip" file on 2020-05-22. We're locking this file because it is what was used to train/calibrate. No
+# changes to this file should be allowed without a really good reason. 
   tmp/filtered_observations.rds:
-    command: filter_feather_obs(target_name, site_ids = modeled_lake_ids,
+    command: filter_csv_obs(target_name, site_ids = superset_release_ids,
       obs_start = export_start, obs_stop = export_stop,
-      obs_feather = I('../lake-temperature-model-prep/7b_temp_merge/out/temp_data_with_sources.feather'))
+      obs_csv = I('in_data/hyperscales_temperature_observations.csv'))
 
   out_data/temperature_observations.zip:
     command: zip_filter_obs(target_name, 'tmp/filtered_observations.rds')

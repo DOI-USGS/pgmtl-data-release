@@ -2,7 +2,7 @@
 target_default: 5_predictions
 
 include:
-  - 1_spatial.yml
+  - 4_inputs.yml
 
 packages:
   - yaml
@@ -25,12 +25,39 @@ targets:
   5_predictions:
     depends:
       - out_data/predict_lakes.png
+      - out/5_pb0_predict_zips.yml
+      - out/5_pball_predict_zips.yml
 
 # pb0 predictions are here: 3_run/sync/pb0_{site_id}_temperatures.feather
 # pball predictions are here: 3_run/sync/pball_{site_id}_temperatures.feather
 # calibrated params were cd, sw_factor, and coef_mix_hyp
 # pball configs are here: 2_prep/sync/pball_{site_id}.nml
 
+  pb0_predictions_df:
+    command: export_pb_df(site_ids = superset_release_ids,
+      exp_prefix = I('pb0'), exp_suffix = I('temperatures'),
+      file_template = I('../lake-temperature-process-models/3_run/sync/pb0_%s_temperatures.feather'))
+
+  pball_predictions_df:
+    command: export_pb_df(site_ids = source_ids,
+      exp_prefix = I('pball'), exp_suffix = I('temperatures'),
+      file_template = I('../lake-temperature-process-models/3_run/sync/pball_%s_temperatures.feather'))
+      
+  out/5_pb0_predict_zips.yml:
+    command: zip_pb_export_groups(target_name,
+      file_info_df = pb0_predictions_df,
+      site_groups = site_ids_grouped,
+      export_start = export_start,
+      export_stop = export_stop,
+      export = I('pb0_predictions'))
+  
+  out/5_pball_predict_zips.yml:
+    command: zip_pb_export_groups(target_name,
+      file_info_df = pball_predictions_df,
+      site_groups = site_ids_grouped,
+      export_start = export_start,
+      export_stop = export_stop,
+      export = I('pball_predictions'))
 
   out_data/predict_lakes.png:
     command: plot_grouped_lakes_preview(target_name,

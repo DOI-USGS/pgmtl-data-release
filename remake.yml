@@ -1,7 +1,10 @@
 
 include:
-  - 5_predictions.yml
+  - 2_observations.yml
   - 3_config.yml
+  - 5_predictions.yml
+  - 6_evaluation.yml
+
 
 packages:
   - yaml
@@ -32,11 +35,21 @@ targets:
       - 00_parent_sb_xml
       - 01_spatial_sb_xml
       - 01_spatial_sb_shp
+      - 01_spatial_sb_data
+      - 02_observations_sb_data
+      - 02_observations_sb_xml
       - 03_config_sb_xml
       - 03_config_sb_data
+      - 04_inputs_sb_xml
       - 04_inputs_sb_image
+      - 04_inputs_sb_meteo
+      - 04_inputs_sb_ice
       - 05_predictions_sb_xml
       - 05_predictions_sb_image
+      - 05_predictions_sb_pb0
+      - 05_predictions_sb_pball
+      - 06_evaluation_sb_data
+      - 06_evaluation_sb_xml
 
 
 # in case you want to mess w/ the xml alone:
@@ -60,7 +73,10 @@ targets:
   01_spatial_sb_shp:
     command: sb_replace_files(sbid_01_spatial,
       "out_data/01_spatial.zip")
-
+  01_spatial_sb_data:
+    command: sb_replace_files(sbid_01_spatial,
+      "out_data/lake_metadata.csv")
+  
   02_observations_sb_data:
     command: sb_replace_files(sbid_02_observations,
       "out_data/temperature_observations.zip")
@@ -99,10 +115,6 @@ targets:
     command: sb_replace_files(sbid_04_inputs,
       file_hash = "out/4_ice_flags_zips.yml")
 
-  04_inputs_sb_clarity:
-    command: sb_replace_files(sbid_04_inputs,
-      file_hash = "out/4_clarity_zips.yml")
-
   05_predictions_sb_xml:
     command: sb_render_post_xml(sbid_05_predictions,
       "in_text/text_SHARED.yml",
@@ -115,15 +127,11 @@ targets:
 
   05_predictions_sb_pb0:
     command: sb_replace_files(sbid_05_predictions,
-      file_hash = "out/5_predictions_zips.yml")
+      file_hash = "out/5_pb0_predict_zips.yml")
 
-  05_predictions_sb_irr:
+  05_predictions_sb_pball:
     command: sb_replace_files(sbid_05_predictions,
-      file_hash = "out/5_irradiance_zips.yml")
-
-  05_predictions_sb_pgdl:
-    command: sb_replace_files(sbid_05_predictions,
-      file_hash = "out/5_pgdl_predictions_zips.yml")
+      file_hash = "out/5_pball_predict_zips.yml")
 
   06_evaluation_sb_xml:
     command: sb_render_post_xml(sb_id_06_evaluation,
@@ -134,12 +142,9 @@ targets:
   06_evaluation_sb_data:
     command: sb_replace_files(sb_id_06_evaluation,
       "out_data/pb0_matched_to_observations.zip",
-      "out_data/pb0_evaluation.csv")
-
-  06_evaluation_sb_data_pgdl:
-    command: sb_replace_files(sb_id_06_evaluation,
-      "out_data/pgdl_matched_to_observations.zip",
-      "out_data/pgdl_evaluation.csv")
+      "out_data/pb0_evaluation.csv",
+      "out_data/pball_matched_to_observations.zip",
+      "out_data/pball_evaluation.csv")
 
   # ------ SB IDs --------
 

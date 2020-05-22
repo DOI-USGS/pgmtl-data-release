@@ -31,7 +31,7 @@ xwalk_meteo_lat_lon <- function(meteo_fl, meteo_dir, ldas_grid){
 
 }
 
-create_metadata_file <- function(fileout, sites, table, lakes_sf, lat_lon_fl, meteo_fl_info, gnis_names_fl){
+create_metadata_file <- function(fileout, sites, table, lakes_sf, nml_json_fl, lat_lon_fl, meteo_fl_info, gnis_names_fl){
   sdf <- sf::st_transform(lakes_sf, 2811) %>%
     mutate(perim = lwgeom::st_perimeter_2d(Shape), area = sf::st_area(Shape), circle_perim = 2*pi*sqrt(area/pi), SDF = perim/circle_perim) %>%
     sf::st_drop_geometry() %>% select(site_id, SDF)
@@ -170,25 +170,28 @@ zip_meteo_groups <- function(outfile, xwalk_meteo_fl_names, grouped_meteo_fls){
   scipiper::sc_indicate(outfile, data_file = data_files)
 }
 
+filter_csv_obs <- function(outfile, obs_csv, site_ids, obs_start, obs_stop){
+  readr::read_csv(obs_csv) %>%
+    filter(site_id %in% site_ids) %>%
+    filter(date >= obs_start & date <= obs_stop) %>%
+    saveRDS(file = outfile)
+}
 
 #' builds the data.frame that is used to define how model results are exported
 #' @param site_ids which model ids to use in the export
-#' @param model_out_ind the indicator file which defines the complete model run files
+#' @param file_template the pattern for how to write the source_filepath given the site_id
 #' @param exp_prefix prefix to the exported files (e.g., 'pb0')
 #' @param exp_suffix suffix to the exported files (e.g., 'irradiance')
-export_pb_df <- function(site_ids, model_out_ind, exp_prefix, exp_suffix){
+export_pb_df <- function(site_ids, file_template, exp_prefix, exp_suffix){
 
-  file_bits <- yaml.load_file(model_out_ind)
-  model_proj_dir <- paste(str_split(model_out_ind, '/')[[1]][1:2], collapse = '/')
-  tibble(file = names(file_bits), hash = unlist(file_bits)) %>%
-    split_pb_filenames() %>% filter(site_id %in% site_ids) %>%
-    mutate(out_file = sprintf('%s_%s_%s.csv', exp_prefix, site_id, exp_suffix),
-           source_filepath = file.path(model_proj_dir, file)) %>%
+  tibble(site_id = site_ids) %>% 
+    mutate(source_filepath = sprintf(file_template, site_id), hash = tools::md5sum(source_filepath)) %>% 
+    mutate(out_file = sprintf('%s_%s_%s.csv', exp_prefix, site_id, exp_suffix)) %>% 
     select(site_id, source_filepath, out_file, hash)
 }
 
 zip_pb_export_groups <- function(outfile, file_info_df, site_groups,
-                                 export = c('ice_flags','pb0_predictions','clarity','irradiance'),
+                                 export = c('ice_flags','pb0_predictions','pball_predictions'),
                                  export_start, export_stop){
 
   export <- match.arg(export)
@@ -217,17 +220,15 @@ zip_pb_export_groups <- function(outfile, file_info_df, site_groups,
 
     for (i in 1:nrow(these_files)){
       fileout <- file.path(tempdir(), these_files$out_file[i])
-
+      
       model_data <- feather::read_feather(these_files$source_filepath[i]) %>%
-        rename(kd = extc_coef_0) %>%
-        mutate(date = as.Date(lubridate::ceiling_date(time, 'days'))) %>%
+        mutate(date = as.Date(lubridate::ceiling_date(DateTime, 'days'))) %>%
         filter(date >= export_start & date <= export_stop)
 
       switch(export,
              ice_flags = select(model_data, date, ice),
              pb0_predictions = select(model_data, date, contains('temp_')),
-             clarity = select(model_data, date, kd),
-             irradiance = select(model_data, date, rad_0)) %>%
+             pball_predictions = select(model_data, date, contains('temp_'))) %>% 
         write_csv(path = fileout)
     }
 
