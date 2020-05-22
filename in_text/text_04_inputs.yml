@@ -1,5 +1,5 @@
 title: >-
-  Walleye Thermal Optical Habitat Area (TOHA) of selected Minnesota lakes: 4 Model inputs (meteorological inputs and ice flags)
+  Predicting Water Temperature Dynamics of Unmonitored Lakes with Meta Transfer Learning: 4 Model inputs (meteorological inputs and ice flags)
 
 abstract: >-
   This dataset includes model inputs (specifically, weather and flags for predicted ice-cover) and is part of a larger data release of lake temperature model inputs and outputs for 909 lakes in the U.S.

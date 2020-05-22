@@ -1,0 +1,50 @@
+target_default: 6_evaluation
+
+packages:
+  - dplyr
+  - tidyr
+  - ggplot2
+
+sources:
+  - src/file_utils.R
+  - src/spatial_utils.R
+  - src/plot_utils.R
+  - src/eval_utils.R
+  - src/viz_utils.R
+
+targets:
+  6_evaluation:
+    depends:
+      - out_data/pb0_evaluation.csv
+      - out_data/pball_evaluation.csv
+
+  obs_for_eval:
+    command: readRDS('tmp/filtered_observations.rds')
+
+  pb0_matched_to_observations:
+    command: match_glm_obs(target_name, eval_data = obs_for_eval,
+      predict_df = pb0_predictions_df)
+
+  out_data/pb0_matched_to_observations.zip:
+    command: zip_this(target_name, pb0_matched_to_observations)
+
+  out_data/pb0_evaluation.csv:
+    command: compare_as_rmse(target_name,
+      matched_preds = pb0_matched_to_observations)
+
+  pball_matched_to_observations:
+    command: match_glm_obs(target_name, eval_data = obs_for_eval,
+      predict_df = pball_predictions_df)
+
+  out_data/pball_matched_to_observations.zip:
+    command: zip_this(target_name, pball_matched_to_observations)
+
+  out_data/pball_evaluation.csv:
+    command: compare_as_rmse(target_name,
+      matched_preds = pball_matched_to_observations)
+
+  tmp/compare_rmses.png:
+    command: plot_rmses(
+      target_name,
+      I('out_data/pb0_evaluation.csv'),
+      I('out_data/pgdl_evaluation.csv'))

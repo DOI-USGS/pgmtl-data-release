@@ -1,15 +1,14 @@
 title: >-
-  Walleye Thermal Optical Habitat Area (TOHA) of selected Minnesota lakes: 2 Water temperature observations
+  Predicting Water Temperature Dynamics of Unmonitored Lakes with Meta Transfer Learning: 2 Water temperature observations
 
 abstract: >-
-  Observed water temperatures from 1980-2018 were compiled for 903 lakes in Minnesota (USA). These data were used
+  Observed water temperatures from 1980-2018 were compiled for 2,378 lakes in the US. These data were used
   as training, test, and error-estimation data for process-guided deep learning models and the evaluation of process-based models.
   The data are formatted as a single csv (comma separated values) file with attributes corresponding to the unique combination of
   lake identifier, time, and depth. Data came from a variety of sources, including the Water Quality Portal,
   the North Temperate Lakes Long-Term Ecological Research Project, and digitized temperature
   records from the MN Department of Natural Resources.
-  This dataset is part of a larger data release of lake temperature model inputs and outputs for 909 lakes in the U.S.
-  state of Minnesota (https://doi.org/10.5066/P9PPHJE2).
+  This dataset is part of a larger data release of lake temperature model inputs and outputs for these same lakes (https://doi.org/10.5066/XXXXX).
 
 cross-cites:
   -
@@ -21,8 +20,8 @@ cross-cites:
 
 entities:
   -
-    data-name: 03_temperature_observations.csv
-    data-description: Temperature observation data for 904 lakes
+    data-name: temperature_observations.zip
+    data-description: Temperature observation data for 2,378 lakes
     attributes:
     -
       attr-label: site_id
@@ -62,4 +61,4 @@ entities:
       data-max: NA
       data-units: NA
 
-file-format: a single comma-delimited file
+file-format: a single comma-delimited file, compressed into a zip file

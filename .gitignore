@@ -24,6 +24,14 @@
 vignettes/*.html
 vignettes/*.pdf
 
+tmp/*
+rc.local
+out_data/*
+.remake/*
+.DS_Store
+
+in_data/*.csv
+
 # OAuth2 token, see https://github.com/hadley/httr/releases/tag/v0.3
 .httr-oauth
 

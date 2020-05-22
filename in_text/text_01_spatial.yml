@@ -59,14 +59,14 @@ entities:
       data-max: NA
       data-units: NA
     -
-      attr-label: centroid_lon centroid_lat" "state"        "county"       "lake_name"
+      attr-label: centroid_lon centroid_lat
       attr-def: longitude (decimal-degrees) of the centroid of this lake (for purposes of calculating group_id and linking meteorological data cells)
       attr-defs: NA
       data-min: -99.42552
       data-max: -83.08698
       data-units: decimal-degrees
     -
-      attr-label: centroid_lat" "state"        "county"       "lake_name"
+      attr-label: centroid_lat
       attr-def: latitude (decimal-degrees) of the centroid of this lake (for purposes of calculating group_id and linking meteorological data cells)
       attr-defs: NA
       data-min: 40.9117
@@ -82,7 +82,7 @@ entities:
       data-max: NA
       data-units: NA
     -
-      attr-label: county"       "lake_name"
+      attr-label: county
       attr-def: >-
         County name for each county overlapped by this lake.
         When more than one county, county names are separated by "|", such as "Lake|St. Louis"

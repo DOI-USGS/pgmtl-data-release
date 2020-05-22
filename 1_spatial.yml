@@ -79,6 +79,7 @@ targets:
       sites = site_ids_grouped,
       county_state_overlaps,
       lakes_sf = modeled_lakes_sf,
+      nml_json_fl = 'out_data/pb0_config.json',
       lat_lon_fl = '../lake-temperature-model-prep/7_config_merge/out/nml_lat_lon_values.rds',
       meteo_fl_info = xwalk_meteo_fl_names,
       gnis_names_fl = '../lake-temperature-model-prep/2_crosswalk_munge/out/gnisname_nhdhr_xwalk.rds')
