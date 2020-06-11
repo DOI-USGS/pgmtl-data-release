@@ -35,9 +35,16 @@ targets:
 
   pb0_predictions_df:
     command: export_pb_df(site_ids = superset_release_ids,
+      dummy = I("2020-05-26"),
       exp_prefix = I('pb0'), exp_suffix = I('temperatures'),
       file_template = I('../lake-temperature-process-models/3_run/sync/pb0_%s_temperatures.feather'))
 
+  mtl_predictions_df:
+    command: export_mtl_df(site_ids = target_ids,
+      dummy = I("2020-06-10"),
+      exp_prefix = I('pgmtl'), exp_suffix = I('temperatures'),
+      file_template = I('in_data/mtl_outputs2_jared/%s/top_source0_nhdhr%s_output'))
+    
   pball_predictions_df:
     command: export_pb_df(site_ids = source_ids,
       exp_prefix = I('pball'), exp_suffix = I('temperatures'),

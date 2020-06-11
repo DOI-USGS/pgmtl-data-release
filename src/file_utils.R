@@ -170,6 +170,13 @@ zip_meteo_groups <- function(outfile, xwalk_meteo_fl_names, grouped_meteo_fls){
   scipiper::sc_indicate(outfile, data_file = data_files)
 }
 
+filter_feather_obs <- function(outfile, obs_feather, site_ids, obs_start, obs_stop){
+  feather::read_feather(obs_feather) %>%
+    filter(site_id %in% site_ids) %>%
+    filter(date >= obs_start & date <= obs_stop) %>%
+    saveRDS(file = outfile)
+}
+
 filter_csv_obs <- function(outfile, obs_csv, site_ids, obs_start, obs_stop){
   readr::read_csv(obs_csv) %>%
     filter(site_id %in% site_ids) %>%
@@ -182,10 +189,19 @@ filter_csv_obs <- function(outfile, obs_csv, site_ids, obs_start, obs_stop){
 #' @param file_template the pattern for how to write the source_filepath given the site_id
 #' @param exp_prefix prefix to the exported files (e.g., 'pb0')
 #' @param exp_suffix suffix to the exported files (e.g., 'irradiance')
-export_pb_df <- function(site_ids, file_template, exp_prefix, exp_suffix){
+export_pb_df <- function(site_ids, file_template, exp_prefix, exp_suffix, dummy){
 
   tibble(site_id = site_ids) %>% 
     mutate(source_filepath = sprintf(file_template, site_id), hash = tools::md5sum(source_filepath)) %>% 
+    mutate(out_file = sprintf('%s_%s_%s.csv', exp_prefix, site_id, exp_suffix)) %>% 
+    select(site_id, source_filepath, out_file, hash)
+}
+
+export_mtl_df <- function(site_ids, file_template, exp_prefix, exp_suffix, dummy){
+  
+  browser()
+  tibble(site_id = site_ids) %>% 
+    mutate(source_filepath = sprintf(file_template, site_id, id_only), hash = tools::md5sum(source_filepath)) %>% 
     mutate(out_file = sprintf('%s_%s_%s.csv', exp_prefix, site_id, exp_suffix)) %>% 
     select(site_id, source_filepath, out_file, hash)
 }
