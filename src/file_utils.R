@@ -197,14 +197,64 @@ export_pb_df <- function(site_ids, file_template, exp_prefix, exp_suffix, dummy)
     select(site_id, source_filepath, out_file, hash)
 }
 
-export_mtl_df <- function(site_ids, file_template, exp_prefix, exp_suffix, dummy){
+export_mtl_df <- function(site_ids, dir_template, file_pattern, exp_prefix, exp_suffix, dummy){
   
-  browser()
   tibble(site_id = site_ids) %>% 
-    mutate(source_filepath = sprintf(file_template, site_id, id_only), hash = tools::md5sum(source_filepath)) %>% 
+    mutate(source_dir = sprintf(dir_template, site_id)) %>% rowwise() %>% 
+    mutate(source_filepath = file.path(source_dir, {tibble(file = dir(source_dir)) %>% filter(stringr::str_detect(file, file_pattern)) %>% pull(file)})) %>% 
+    ungroup() %>% mutate(hash = tools::md5sum(source_filepath)) %>% 
     mutate(out_file = sprintf('%s_%s_%s.csv', exp_prefix, site_id, exp_suffix)) %>% 
     select(site_id, source_filepath, out_file, hash)
 }
+
+zip_mtl_export_groups <- function(outfile, file_info_df, site_groups,
+                                 export = c('pgmtl_predictions','pgmtl9_predictions')){
+  
+  export <- match.arg(export)
+  
+  model_feathers <- inner_join(file_info_df, site_groups, by = 'site_id') %>%
+    select(-site_id)
+  
+  zip_pattern <- paste0('tmp/', export, '_%s.zip')
+  
+  cd <- getwd()
+  on.exit(setwd(cd))
+  
+  groups <- rev(sort(unique(model_feathers$group_id)))
+  data_files <- c()
+  
+  for (group in groups){
+    zipfile <- sprintf(zip_pattern, group)
+    
+    these_files <- model_feathers %>% filter(group_id == !!group)
+    
+    zippath <- file.path(getwd(), zipfile)
+    
+    if (file.exists(zippath)){
+      unlink(zippath) #seems it was adding to the zip as opposed to wiping and starting fresh...
+    }
+    
+    for (i in 1:nrow(these_files)){
+      fileout <- file.path(tempdir(), these_files$out_file[i])
+      
+      feather::read_feather(these_files$source_filepath[i]) %>% rename(depth = index) %>% 
+        pivot_longer(-depth, names_to = 'date', values_to = 'temp') %>% 
+        mutate(date = as.Date(date)) %>% 
+        pivot_wider(names_from = depth, values_from = temp, names_prefix = 'temp_') %>% 
+        write_csv(path = fileout)
+    }
+    
+    setwd(tempdir())
+    
+    zip(zippath, files = these_files$out_file)
+    unlink(these_files$out_file)
+    setwd(cd)
+    data_files <- c(data_files, zipfile)
+  }
+  scipiper::sc_indicate(outfile, data_file = data_files)
+  
+}
+
 
 zip_pb_export_groups <- function(outfile, file_info_df, site_groups,
                                  export = c('ice_flags','pb0_predictions','pball_predictions'),

@@ -43,6 +43,14 @@ targets:
     command: compare_as_rmse(target_name,
       matched_preds = pball_matched_to_observations)
 
+  pgmtl9_matched_to_observations:
+    command: match_pgmtl_obs(target_name, eval_data = obs_for_eval,
+      predict_df = mtl9_predictions_df)
+  
+  pgmtl_matched_to_observations:
+    command: match_pgmtl_obs(target_name, eval_data = obs_for_eval,
+      predict_df = mtl_predictions_df)    
+
   tmp/compare_rmses.png:
     command: plot_rmses(
       target_name,
