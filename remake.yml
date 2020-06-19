@@ -154,7 +154,11 @@ targets:
       "out_data/pb0_matched_to_observations.zip",
       "out_data/pb0_evaluation.csv",
       "out_data/pball_matched_to_observations.zip",
-      "out_data/pball_evaluation.csv")
+      "out_data/pball_evaluation.csv",
+      "out_data/pgmtl9_matched_to_observations.zip",
+      "out_data/pgmtl9_evaluation.csv",
+      "out_data/pgmtl_matched_to_observations.zip",
+      "out_data/pgmtl_evaluation.csv")
 
   # ------ SB IDs --------
 
