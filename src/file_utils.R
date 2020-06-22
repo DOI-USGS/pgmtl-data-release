@@ -197,6 +197,18 @@ export_pb_df <- function(site_ids, file_template, exp_prefix, exp_suffix, dummy)
     select(site_id, source_filepath, out_file, hash)
 }
 
+export_pbmtl_df <- function(model_out_fl, exp_prefix, exp_suffix){
+  source_dir <- paste0('../', str_split(dirname(model_out_fl), '/')[[1]][2])
+  stopifnot(dir.exists(source_dir)) # safety check since this is a hacky way to get the dir
+  model_info <- yaml::yaml.load_file(model_out_fl)
+  
+  # need to extract "nhdhr_143418975" from "4_transfer/out/nhdhr_143418975_t|s_nhdhr_143418891_temperatures.feather"
+  tibble(source_filename = names(model_info), hash = unlist(model_info)) %>% rowwise() %>% 
+    mutate(site_id = {str_split(basename(source_filename), '_t\\|s_')[[1]][1]}) %>% ungroup() %>% 
+    mutate(source_filepath = file.path(source_dir, source_filename), out_file = sprintf('%s_%s_%s.csv', exp_prefix, site_id, exp_suffix)) %>% 
+    select(site_id, source_filepath, out_file, hash)
+}
+
 export_mtl_df <- function(site_ids, dir_template, file_pattern, exp_prefix, exp_suffix, dummy){
   
   tibble(site_id = site_ids) %>% 

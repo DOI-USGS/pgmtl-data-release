@@ -40,6 +40,11 @@ targets:
       exp_prefix = I('pb0'), exp_suffix = I('temperatures'),
       file_template = I('../lake-temperature-process-models/3_run/sync/pb0_%s_temperatures.feather'))
 
+  # also need to extend depth!
+  pbmtl_predictions_df:
+    command: export_pbmtl_df(model_out_fl = '../lake-temperature-process-models/3_run/out/transfer_tasks.rds.ind', 
+      exp_prefix = I('pbmtl'), exp_suffix = I('temperatures'))
+      
   mtl_predictions_df:
     command: export_mtl_df(site_ids = target_ids,
       dummy = I("2020-06-10"),
