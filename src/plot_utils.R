@@ -1,4 +1,43 @@
 
+plot_domain_map <- function(fileout, lakes_sf_fl, source_ids, target_test_ids, target_expansion_ids, plot_crs = "+init=epsg:2811"){
+  all_lakes <- readRDS(lakes_sf_fl) %>% st_transform(crs = plot_crs)
+  
+  # simplify lakes to speed up the plot
+  all_lakes_simple <- sf::st_simplify(all_lakes, dTolerance = 40) %>% mutate(area = st_area(Shape) %>% as.numeric)
+  
+  c_dir <- getwd()
+  setwd('../low-flows')
+  conus_states <- scmake('conus_states', remake_file = 'remake_nccsc.yml')
+  setwd(c_dir)
+  j_col <- '#1b9e77'
+  
+  png(filename = fileout, width = 7, height = 5, units = 'in', res = 550)
+  par(omi = c(0,0,0,0), mai = c(0,0,0,0), xaxs = 'i', yaxs = 'i')
+  
+  plot(conus_states[names(conus_states) %in% c('minnesota','wisconsin','michigan')], col = NA, border = 'grey50', lwd = 1.5,
+       reset = FALSE, expandBB = c(0.01,0.02,0.01,0.05))
+  modeled_lakes <- filter(all_lakes_simple, site_id %in% source_ids)
+  plot(st_geometry(modeled_lakes), col = j_col, border = 'grey70', lwd = 0.1, add = TRUE)
+  
+  plot(st_geometry(all_lakes_simple), col = 'grey70', border = 'grey70', lwd = 0.1, add = TRUE)
+  plot(conus_states, col = NA, border = 'grey50', lwd = 1.5, add = TRUE)
+  
+  n_col <- '#d95f02'
+  c_col <- '#1E90FF'##7570b3'
+  
+  just_states <- sf::st_as_sf(conus_states[names(conus_states) %in% c('minnesota','wisconsin','michigan')]) %>%
+    st_transform(crs = st_crs(modeled_lakes))
+  plot_ids <- sf::st_contains(just_states, modeled_lakes,  sparse = TRUE) %>% unlist()
+  just_wmm <- modeled_lakes[plot_ids, ]
+  plot(st_geometry(just_wmm), col = c_col, border = c_col, lwd = 0.1, add = TRUE)
+  plot(st_centroid(st_geometry(just_wmm)), col = paste0(c_col, 'CC'), lwd = 0.3, add = TRUE, cex = 0.2)
+  #plot(st_geometry(filter(all_lakes_simple, site_id %in% (filter(has_bathy, has_bathy)$site_id))), col = c_col, border = c_col, lwd = 0.1, add = TRUE)
+  #plot(st_centroid(st_geometry(filter(all_lakes_simple, site_id %in% (filter(has_bathy, has_bathy)$site_id)))), col = paste0(c_col, 'CC'), lwd = 0.3, add = TRUE, cex = 0.25)
+  
+  dev.off()
+  
+}
+
 
 plot_grouped_lakes_preview <- function(fileout, spatial_groups, county_bounds, site_ids_grouped, lakes_sf_fl){
   out <- plot_groups(fileout, spatial_groups, county_bounds, lakes_sf_fl)

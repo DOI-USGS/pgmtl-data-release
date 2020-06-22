@@ -3,6 +3,18 @@ split_pb_filenames <- function(files_df){
   extract(files_df, file, c('prefix','site_id','suffix'), "(pb0|pball)_(.*)_(temperatures_irradiance.feather)", remove = FALSE)
 }
 
+extract_id_pbmtl <- function(filepath){
+  tibble(source_filename = names(yaml::yaml.load_file(filepath))) %>% rowwise() %>% 
+    mutate(site_id = {str_split(basename(source_filename), '_t\\|s_')[[1]][1]}) %>% ungroup() %>%
+    arrange(site_id) %>% 
+    pull(site_id)
+}
+
+extract_expansion_ids <- function(filepath, target_ids){
+  read_csv(filepath) %>% filter(!target_id %in% target_ids) %>% 
+    pull(target_id) %>% unique() %>% sort()
+}
+
 extract_csv_column <- function(filepath, column){
   read_csv(filepath) %>% pull(column) %>% unique() %>% sort()
 }

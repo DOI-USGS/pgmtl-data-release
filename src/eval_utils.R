@@ -31,6 +31,41 @@ match_glm_obs <- function(target_name, eval_data, predict_df){
   }) %>% purrr::reduce(bind_rows)
 }
 
+match_extend_glm_obs <- function(target_name, eval_data, predict_df){
+  
+  file_info <- predict_df %>% select(site_id, source_filepath) %>% 
+    filter(!site_id %in% c('nhdhr_109981594','nhdhr_109989488','nhdhr_123398097','nhdhr_123398250','nhdhr_143250706','nhdhr_149094360','nhdhr_152372580','nhdhr_47484399','nhdhr_69546663','nhdhr_70330649','nhdhr_70331069','nhdhr_75660023'))
+  
+  purrr::map(1:nrow(file_info), function(x){
+    this_file <- file_info$source_filepath[x]
+    this_id <- file_info$site_id[x]
+    these_obs <- eval_data %>% filter(site_id %in% this_id)
+    
+    # if max(depth) of obs is greater than max of data.frame, fill w/ tidyr
+    model_preds <- feather::read_feather(this_file) %>% 
+      mutate(time = as.Date(lubridate::ceiling_date(DateTime, 'days'))) %>% select(time, contains('temp_'))
+    
+    z_max_pred <- tail(names(model_preds), 1) %>% {strsplit(., '_')[[1]][2]} %>% as.numeric()
+    z_max_obs <- max(these_obs$depth)
+    
+    if (z_max_obs > z_max_pred){
+      model_preds[[sprintf('temp_%s', z_max_obs)]] <- NA
+    }
+      
+    skinny_preds <- pivot_longer(model_preds, -time, names_to = 'depth', values_to = 'temp', names_prefix = 'temp_') %>%
+      mutate(depth = as.numeric(depth)) %>% filter(time %in% these_obs$date) %>%
+      arrange(depth) %>%
+      tidyr::fill(temp, .direction = 'down') %>% ungroup() %>%
+      rename(date = time, pred = temp)
+    
+    prep_pred_obs(test_obs = these_obs, model_preds = skinny_preds) %>%
+      select(site_id, date, depth, obs, pred, source) %>% 
+      filter(!is.na(pred))
+    
+  }) %>% purrr::reduce(bind_rows)
+  
+}
+
 match_pgmtl_obs <- function(target_name, eval_data, predict_df){
   
   file_info <- predict_df %>% select(site_id, source_filepath) %>% 

@@ -42,9 +42,15 @@ targets:
     command: extract_csv_column(filepath = '../lake-temperature-process-models/3_run/out/RMSE_transfer_glm.csv',
       column = I('source_id'))
   
+  target_test_ids:
+    command: extract_id_pbmtl('../lake-temperature-process-models/3_run/out/transfer_tasks.rds.ind')
+    
+  target_expansion_ids:
+    command: extract_expansion_ids(filepath = 'in_data/pgdtl_rmse__2233Test_ens9 - pgdtl_rmse_pball_2300_ens9.csv',
+      target_test_ids)
+  
   target_ids:
-    command: extract_csv_column(filepath = 'in_data/pgdtl_rmse__2233Test_ens9 - pgdtl_rmse_pball_2300_ens9.csv',
-      column = I('target_id'))
+    command: c(target_test_ids, target_expansion_ids)
     
   superset_release_ids:
     command: c(source_ids, target_ids)
@@ -84,7 +90,12 @@ targets:
       meteo_fl_info = xwalk_meteo_fl_names,
       gnis_names_fl = '../lake-temperature-model-prep/2_crosswalk_munge/out/gnisname_nhdhr_xwalk.rds')
 
-
+  out_data/modeling_domain_map.png:
+    command: plot_domain_map(target_name,
+      lakes_sf_fl = "../lake-temperature-model-prep/1_crosswalk_fetch/out/canonical_lakes_sf.rds",
+      source_ids = source_ids, target_test_ids = target_test_ids, target_expansion_ids = target_expansion_ids,
+      plot_crs = I("+init=epsg:2811"))
+    
   spatial_metadata:
     command: extract_feature(modeled_lakes_sf)
 

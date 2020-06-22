@@ -17,6 +17,7 @@ targets:
     depends:
       - out_data/pb0_evaluation.csv
       - out_data/pball_evaluation.csv
+      - out_data/pbmtl_evaluation.csv
       - out_data/pgmtl9_evaluation.csv
       - out_data/pgmtl_evaluation.csv
 
@@ -66,6 +67,17 @@ targets:
   out_data/pgmtl_evaluation.csv:
     command: compare_as_rmse(target_name,
       matched_preds = pgmtl_matched_to_observations)    
+
+  pbmtl_matched_to_observations:
+    command: match_extend_glm_obs(target_name, eval_data = obs_for_eval,
+      predict_df = pbmtl_predictions_df)
+
+  out_data/pbmtl_matched_to_observations.zip:
+    command: zip_this(target_name, pbmtl_matched_to_observations)
+    
+  out_data/pbmtl_evaluation.csv:
+    command: compare_as_rmse(target_name,
+      matched_preds = pbmtl_matched_to_observations)
 
   tmp/compare_rmses.png:
     command: plot_rmses(

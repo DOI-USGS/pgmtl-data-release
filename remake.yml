@@ -158,7 +158,9 @@ targets:
       "out_data/pgmtl9_matched_to_observations.zip",
       "out_data/pgmtl9_evaluation.csv",
       "out_data/pgmtl_matched_to_observations.zip",
-      "out_data/pgmtl_evaluation.csv")
+      "out_data/pgmtl_evaluation.csv",
+      "out_data/pbmtl_matched_to_observations.zip",
+      "out_data/pbmtl_evaluation.csv")
 
   # ------ SB IDs --------
 
