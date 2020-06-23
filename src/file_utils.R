@@ -10,9 +10,9 @@ extract_id_pbmtl <- function(filepath){
     pull(site_id)
 }
 
-extract_expansion_ids <- function(filepath, target_ids){
-  read_csv(filepath) %>% filter(!target_id %in% target_ids) %>% 
-    pull(target_id) %>% unique() %>% sort()
+extract_expansion_ids <- function(filepath, target_ids, source_ids){
+  readRDS(filepath) %>% filter(!site_id %in% c(target_ids, source_ids)) %>% 
+    pull(site_id) %>% unique() %>% sort()
 }
 
 extract_csv_column <- function(filepath, column){

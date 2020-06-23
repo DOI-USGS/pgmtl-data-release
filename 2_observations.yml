@@ -32,9 +32,15 @@ targets:
 #      obs_csv = I('in_data/hyperscales_temperature_observations.csv'))
   
   tmp/filtered_observations.rds:
-    command: filter_feather_obs(target_name, site_ids = superset_release_ids,
-      obs_start = export_start, obs_stop = export_stop,
+    command: filter_feather_obs(target_name, site_ids = filter_ids,
+      obs_start = export_start, obs_stop = export_stop, 
       obs_feather = '../lake-temperature-model-prep/7b_temp_merge/out/merged_temp_data_daily.feather')
+  
+  filter_ids:
+    command: c(source_ids, possible_target_ids)
+  
+  possible_target_ids:
+    command: extract_csv_column(filepath = 'in_data/pgdtl_rmse__2233Test_ens9 - pgdtl_rmse_pball_2300_ens9.csv', column = I('target_id'))
       
   out_data/temperature_observations.zip:
     command: zip_filter_obs(target_name, 'tmp/filtered_observations.rds')

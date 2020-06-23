@@ -50,6 +50,7 @@ targets:
       - 05_predictions_sb_pball
       - 05_predictions_sb_pgmtl9
       - 05_predictions_sb_pgmtl
+      - 05_predictions_sb_pbmtl
       - 06_evaluation_sb_data
       - 06_evaluation_sb_xml
 
@@ -143,6 +144,10 @@ targets:
     command: sb_replace_files(sbid_05_predictions,
       file_hash = "out/5_pgmtl_predict_zips.yml")
 
+  05_predictions_sb_pbmtl:      
+    command: sb_replace_files(sbid_05_predictions,
+      file_hash = "out/5_pbmtl_predict_zips.yml")
+      
   06_evaluation_sb_xml:
     command: sb_render_post_xml(sb_id_06_evaluation,
       "in_text/text_SHARED.yml",

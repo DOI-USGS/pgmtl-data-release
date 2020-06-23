@@ -13,9 +13,7 @@ filter_min_dates <- function(obs_rds_file, min_dates){
 # interpolate the predictions to the depths of the observations
 match_glm_obs <- function(target_name, eval_data, predict_df){
 
-  file_info <- predict_df %>% select(site_id, source_filepath) %>% 
-    filter(!site_id %in% c('nhdhr_109981594','nhdhr_109989488','nhdhr_123398097','nhdhr_123398250','nhdhr_143250706','nhdhr_149094360','nhdhr_152372580','nhdhr_47484399','nhdhr_69546663','nhdhr_70330649','nhdhr_70331069','nhdhr_75660023'))
-
+  file_info <- predict_df %>% select(site_id, source_filepath) 
   purrr::map(1:nrow(file_info), function(x){
     this_file <- file_info$source_filepath[x]
     this_id <- file_info$site_id[x]
@@ -33,8 +31,7 @@ match_glm_obs <- function(target_name, eval_data, predict_df){
 
 match_extend_glm_obs <- function(target_name, eval_data, predict_df){
   
-  file_info <- predict_df %>% select(site_id, source_filepath) %>% 
-    filter(!site_id %in% c('nhdhr_109981594','nhdhr_109989488','nhdhr_123398097','nhdhr_123398250','nhdhr_143250706','nhdhr_149094360','nhdhr_152372580','nhdhr_47484399','nhdhr_69546663','nhdhr_70330649','nhdhr_70331069','nhdhr_75660023'))
+  file_info <- predict_df %>% select(site_id, source_filepath) 
   
   purrr::map(1:nrow(file_info), function(x){
     this_file <- file_info$source_filepath[x]
@@ -68,9 +65,7 @@ match_extend_glm_obs <- function(target_name, eval_data, predict_df){
 
 match_pgmtl_obs <- function(target_name, eval_data, predict_df){
   
-  file_info <- predict_df %>% select(site_id, source_filepath) %>% 
-    filter(!site_id %in% c('nhdhr_109981594','nhdhr_109989488','nhdhr_123398097','nhdhr_123398250','nhdhr_143250706','nhdhr_149094360','nhdhr_152372580','nhdhr_47484399','nhdhr_69546663','nhdhr_70330649','nhdhr_70331069','nhdhr_75660023',
-                           'nhdhr_121628955'))
+  file_info <- predict_df %>% select(site_id, source_filepath)
   
   
   purrr::map(1:nrow(file_info), function(x){
