@@ -7,9 +7,9 @@ plot_domain_map <- function(fileout, lakes_sf_fl, source_ids, target_test_ids, t
   
   conus_states <- group_by(us_counties_sf, state) %>% summarise() %>% st_geometry() %>% st_transform(crs = plot_crs)
   
-  source_col <- '#e41a1c'
-  test_t_col <- '#4daf4a'
-  exp_t_col <- '#984ea3'
+  source_col <- '#ca0020'
+  test_t_col <- '#0571b0'
+  exp_t_col <- '#74add1'
   
   png(filename = fileout, width = 7, height = 4.75, units = 'in', res = 350)
   par(omi = c(0,0,0,0), mai = c(0,0,0,0), xaxs = 'i', yaxs = 'i')

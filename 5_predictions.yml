@@ -37,10 +37,8 @@ targets:
 # pball configs are here: 2_prep/sync/pball_{site_id}.nml
 
   pb0_predictions_df:
-    command: export_pb_df(site_ids = superset_release_ids,
-      dummy = I("2020-05-26"),
-      exp_prefix = I('pb0'), exp_suffix = I('temperatures'),
-      file_template = I('../lake-temperature-process-models/3_run/sync/pb0_%s_temperatures.feather'))
+    command: export_from_table(model_out_fl = '../lake-temperature-process-models/3_run/out/pb0_src_trg_tasks.rds.ind',
+      exp_prefix = I('pb0'), exp_suffix = I('temperatures'))
 
   # also need to extend depth!
   pbmtl_predictions_df:
