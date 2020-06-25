@@ -1,6 +1,6 @@
 
 split_pb_filenames <- function(files_df){
-  extract(files_df, file, c('prefix','site_id','suffix'), "(pb0|pball)_(.*)_(temperatures_irradiance.feather)", remove = FALSE)
+  extract(files_df, file, c('prefix','site_id','suffix'), "(pb0|pball)_(.*)_(temperatures.feather)", remove = FALSE)
 }
 
 extract_id_pbmtl <- function(filepath){
@@ -182,10 +182,49 @@ zip_meteo_groups <- function(outfile, xwalk_meteo_fl_names, grouped_meteo_fls){
   scipiper::sc_indicate(outfile, data_file = data_files)
 }
 
-filter_feather_obs <- function(outfile, obs_feather, site_ids, obs_start, obs_stop){
+filter_resample_obs <- function(outfile, obs_feather, site_ids, obs_start, obs_stop, sample_res = 0.5){
+  
   feather::read_feather(obs_feather) %>%
     filter(site_id %in% site_ids) %>%
     filter(date >= obs_start & date <= obs_stop) %>%
+    group_by(date, depth, site_id, source) %>%
+    summarize(temp = mean(temp)) %>%
+    ungroup() %>%
+    # interpolate
+    group_by(site_id, date, source) %>%
+    do({
+      date_df <- .
+      date_df %>%
+        mutate(
+          # find the closest PGDL depth to the observation depth
+          new_depth = purrr::map_dbl(depth, function(obsdep) {
+            # get depths from 0 to max depth of obs, rounded up to nearest sample_res, but not beyond
+            # so if obsdep = c(0.3, 9.6), we'll go to 10m, but if obsdep = c(0.3, 9.5), we'd go to 9.5
+            depths <- seq(0, max(ceiling(obsdep / sample_res) * sample_res), by = sample_res)
+            depths[which.min(abs(obsdep - depths))]
+            }),
+          # estimate temperature at the new depth using interpolation, or if
+          # that's not possible, set to the nearest observed temperature
+          new_temp = if(nrow(date_df) >= 2) {
+            # if we have enough values on this date, interpolate
+            approx(x=depth, y=temp, xout=new_depth, rule=2)$y
+          } else {
+            # if we can't interpolate, just use the nearest value
+            temp
+          },
+          depth_diff = abs(depth - new_depth)) %>%
+        # after approx(), trash any values at new_depth >= 0.5 m from the nearest observation
+        filter(depth_diff < 0.5) %>%
+        # only keep one estimate for each new_depth
+        group_by(new_depth) %>%
+        filter(depth_diff == min(depth_diff)) %>%
+        ungroup()
+    }) %>%
+    ungroup() %>%
+    # to see my work as columns, print out the result up to this point, e.g. by uncommenting
+    # tail(20) %>% print(n=20)
+    # now we clean up the columns
+    select(site_id, date, depth=new_depth, temp=new_temp, source) %>%
     saveRDS(file = outfile)
 }
 
@@ -206,6 +245,17 @@ export_pb_df <- function(site_ids, file_template, exp_prefix, exp_suffix, dummy)
   tibble(site_id = site_ids) %>% 
     mutate(source_filepath = sprintf(file_template, site_id), hash = tools::md5sum(source_filepath)) %>% 
     mutate(out_file = sprintf('%s_%s_%s.csv', exp_prefix, site_id, exp_suffix)) %>% 
+    select(site_id, source_filepath, out_file, hash)
+}
+
+export_from_table <- function(model_out_fl, exp_prefix, exp_suffix){
+  source_dir <- paste0('../', str_split(dirname(model_out_fl), '/')[[1]][2])
+  stopifnot(dir.exists(source_dir)) # safety check since this is a hacky way to get the dir
+  model_info <- yaml::yaml.load_file(model_out_fl)
+
+  tibble(file = names(model_info), hash = unlist(model_info)) %>% 
+    split_pb_filenames() %>% 
+    mutate(source_filepath = file.path(source_dir, file), out_file = sprintf('%s_%s_%s.csv', exp_prefix, site_id, exp_suffix)) %>% 
     select(site_id, source_filepath, out_file, hash)
 }
 

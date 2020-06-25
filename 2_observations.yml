@@ -32,8 +32,9 @@ targets:
 #      obs_csv = I('in_data/hyperscales_temperature_observations.csv'))
   
   tmp/filtered_observations.rds:
-    command: filter_feather_obs(target_name, site_ids = filter_ids,
+    command: filter_resample_obs(target_name, site_ids = filter_ids,
       obs_start = export_start, obs_stop = export_stop, 
+      sample_res = 0.5,
       obs_feather = '../lake-temperature-model-prep/7b_temp_merge/out/merged_temp_data_daily.feather')
   
   filter_ids:
