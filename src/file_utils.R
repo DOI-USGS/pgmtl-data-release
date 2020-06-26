@@ -214,7 +214,7 @@ filter_resample_obs <- function(outfile, obs_feather, site_ids, obs_start, obs_s
           },
           depth_diff = abs(depth - new_depth)) %>%
         # after approx(), trash any values at new_depth >= 0.5 m from the nearest observation
-        filter(depth_diff < 0.5) %>%
+        filter(depth_diff < sample_res) %>%
         # only keep one estimate for each new_depth
         group_by(new_depth) %>%
         filter(depth_diff == min(depth_diff)) %>%
@@ -225,6 +225,10 @@ filter_resample_obs <- function(outfile, obs_feather, site_ids, obs_start, obs_s
     # tail(20) %>% print(n=20)
     # now we clean up the columns
     select(site_id, date, depth=new_depth, temp=new_temp, source) %>%
+    # take care of some duplicated depth-date combos, such as when orig depths were 0.4 and 0.5 and sample_res is 0.5
+    group_by(site_id, date, depth) %>%
+    summarize(temp = first(temp), source = first(source)) %>%
+    ungroup() %>% 
     saveRDS(file = outfile)
 }
 
