@@ -35,9 +35,8 @@ targets:
       groups = spatial_groups)
 
   ice_flags_df:
-    command: export_pb_df(site_ids = superset_release_ids,
-      exp_prefix = I('pb0'), exp_suffix = I('ice_flags'),
-      file_template = I('../lake-temperature-process-models/3_run/sync/pb0_%s_temperatures.feather'))
+    command: export_from_table(model_out_fl = '../lake-temperature-process-models/3_run/out/pb0_src_trg_tasks.rds.ind',
+      exp_prefix = I('pb0'), exp_suffix = I('ice_flags'))
   
   out/4_inputs_zips.yml:
     command: zip_meteo_groups(target_name,

@@ -1,6 +1,18 @@
 
 split_pb_filenames <- function(files_df){
-  extract(files_df, file, c('prefix','site_id','suffix'), "(pb0|pball)_(.*)_(temperatures_irradiance.feather)", remove = FALSE)
+  extract(files_df, file, c('prefix','site_id','suffix'), "(pb0|pball)_(.*)_(temperatures.feather)", remove = FALSE)
+}
+
+extract_id_pbmtl <- function(filepath){
+  tibble(source_filename = names(yaml::yaml.load_file(filepath))) %>% rowwise() %>% 
+    mutate(site_id = {str_split(basename(source_filename), '_t\\|s_')[[1]][1]}) %>% ungroup() %>%
+    arrange(site_id) %>% 
+    pull(site_id)
+}
+
+extract_expansion_ids <- function(filepath, target_ids, source_ids){
+  readRDS(filepath) %>% filter(!site_id %in% c(target_ids, source_ids)) %>% 
+    pull(site_id) %>% unique() %>% sort()
 }
 
 extract_csv_column <- function(filepath, column){
@@ -170,6 +182,52 @@ zip_meteo_groups <- function(outfile, xwalk_meteo_fl_names, grouped_meteo_fls){
   scipiper::sc_indicate(outfile, data_file = data_files)
 }
 
+filter_resample_obs <- function(outfile, obs_feather, site_ids, obs_start, obs_stop, sample_res = 0.5){
+  
+  feather::read_feather(obs_feather) %>%
+    filter(site_id %in% site_ids) %>%
+    filter(date >= obs_start & date <= obs_stop) %>%
+    group_by(date, depth, site_id, source) %>%
+    summarize(temp = mean(temp)) %>%
+    ungroup() %>%
+    # interpolate
+    group_by(site_id, date, source) %>%
+    do({
+      date_df <- .
+      date_df %>%
+        mutate(
+          # find the closest PGDL depth to the observation depth
+          new_depth = purrr::map_dbl(depth, function(obsdep) {
+            # get depths from 0 to max depth of obs, rounded up to nearest sample_res, but not beyond
+            # so if obsdep = c(0.3, 9.6), we'll go to 10m, but if obsdep = c(0.3, 9.5), we'd go to 9.5
+            depths <- seq(0, max(ceiling(obsdep / sample_res) * sample_res), by = sample_res)
+            depths[which.min(abs(obsdep - depths))]
+            }),
+          # estimate temperature at the new depth using interpolation, or if
+          # that's not possible, set to the nearest observed temperature
+          new_temp = if(nrow(date_df) >= 2) {
+            # if we have enough values on this date, interpolate
+            approx(x=depth, y=temp, xout=new_depth, rule=2)$y
+          } else {
+            # if we can't interpolate, just use the nearest value
+            temp
+          },
+          depth_diff = abs(depth - new_depth)) %>%
+        # after approx(), trash any values at new_depth >= 0.5 m from the nearest observation
+        filter(depth_diff < 0.5) %>%
+        # only keep one estimate for each new_depth
+        group_by(new_depth) %>%
+        filter(depth_diff == min(depth_diff)) %>%
+        ungroup()
+    }) %>%
+    ungroup() %>%
+    # to see my work as columns, print out the result up to this point, e.g. by uncommenting
+    # tail(20) %>% print(n=20)
+    # now we clean up the columns
+    select(site_id, date, depth=new_depth, temp=new_temp, source) %>%
+    saveRDS(file = outfile)
+}
+
 filter_csv_obs <- function(outfile, obs_csv, site_ids, obs_start, obs_stop){
   readr::read_csv(obs_csv) %>%
     filter(site_id %in% site_ids) %>%
@@ -182,13 +240,95 @@ filter_csv_obs <- function(outfile, obs_csv, site_ids, obs_start, obs_stop){
 #' @param file_template the pattern for how to write the source_filepath given the site_id
 #' @param exp_prefix prefix to the exported files (e.g., 'pb0')
 #' @param exp_suffix suffix to the exported files (e.g., 'irradiance')
-export_pb_df <- function(site_ids, file_template, exp_prefix, exp_suffix){
+export_pb_df <- function(site_ids, file_template, exp_prefix, exp_suffix, dummy){
 
   tibble(site_id = site_ids) %>% 
     mutate(source_filepath = sprintf(file_template, site_id), hash = tools::md5sum(source_filepath)) %>% 
     mutate(out_file = sprintf('%s_%s_%s.csv', exp_prefix, site_id, exp_suffix)) %>% 
     select(site_id, source_filepath, out_file, hash)
 }
+
+export_from_table <- function(model_out_fl, exp_prefix, exp_suffix){
+  source_dir <- paste0('../', str_split(dirname(model_out_fl), '/')[[1]][2])
+  stopifnot(dir.exists(source_dir)) # safety check since this is a hacky way to get the dir
+  model_info <- yaml::yaml.load_file(model_out_fl)
+
+  tibble(file = names(model_info), hash = unlist(model_info)) %>% 
+    split_pb_filenames() %>% 
+    mutate(source_filepath = file.path(source_dir, file), out_file = sprintf('%s_%s_%s.csv', exp_prefix, site_id, exp_suffix)) %>% 
+    select(site_id, source_filepath, out_file, hash)
+}
+
+export_pbmtl_df <- function(model_out_fl, exp_prefix, exp_suffix){
+  source_dir <- paste0('../', str_split(dirname(model_out_fl), '/')[[1]][2])
+  stopifnot(dir.exists(source_dir)) # safety check since this is a hacky way to get the dir
+  model_info <- yaml::yaml.load_file(model_out_fl)
+  
+  # need to extract "nhdhr_143418975" from "4_transfer/out/nhdhr_143418975_t|s_nhdhr_143418891_temperatures.feather"
+  tibble(source_filename = names(model_info), hash = unlist(model_info)) %>% rowwise() %>% 
+    mutate(site_id = {str_split(basename(source_filename), '_t\\|s_')[[1]][1]}) %>% ungroup() %>% 
+    mutate(source_filepath = file.path(source_dir, source_filename), out_file = sprintf('%s_%s_%s.csv', exp_prefix, site_id, exp_suffix)) %>% 
+    select(site_id, source_filepath, out_file, hash)
+}
+
+export_mtl_df <- function(site_ids, dir_template, file_pattern, exp_prefix, exp_suffix, dummy){
+  
+  tibble(site_id = site_ids) %>% 
+    mutate(source_dir = sprintf(dir_template, site_id)) %>% rowwise() %>% 
+    mutate(source_filepath = file.path(source_dir, {tibble(file = dir(source_dir)) %>% filter(stringr::str_detect(file, file_pattern)) %>% pull(file)})) %>% 
+    ungroup() %>% mutate(hash = tools::md5sum(source_filepath)) %>% 
+    mutate(out_file = sprintf('%s_%s_%s.csv', exp_prefix, site_id, exp_suffix)) %>% 
+    select(site_id, source_filepath, out_file, hash)
+}
+
+zip_mtl_export_groups <- function(outfile, file_info_df, site_groups,
+                                 export = c('pgmtl_predictions','pgmtl9_predictions')){
+  
+  export <- match.arg(export)
+  
+  model_feathers <- inner_join(file_info_df, site_groups, by = 'site_id') %>%
+    select(-site_id)
+  
+  zip_pattern <- paste0('tmp/', export, '_%s.zip')
+  
+  cd <- getwd()
+  on.exit(setwd(cd))
+  
+  groups <- rev(sort(unique(model_feathers$group_id)))
+  data_files <- c()
+  
+  for (group in groups){
+    zipfile <- sprintf(zip_pattern, group)
+    
+    these_files <- model_feathers %>% filter(group_id == !!group)
+    
+    zippath <- file.path(getwd(), zipfile)
+    
+    if (file.exists(zippath)){
+      unlink(zippath) #seems it was adding to the zip as opposed to wiping and starting fresh...
+    }
+    
+    for (i in 1:nrow(these_files)){
+      fileout <- file.path(tempdir(), these_files$out_file[i])
+      
+      feather::read_feather(these_files$source_filepath[i]) %>% rename(depth = index) %>% 
+        pivot_longer(-depth, names_to = 'date', values_to = 'temp') %>% 
+        mutate(date = as.Date(date)) %>% 
+        pivot_wider(names_from = depth, values_from = temp, names_prefix = 'temp_') %>% 
+        write_csv(path = fileout)
+    }
+    
+    setwd(tempdir())
+    
+    zip(zippath, files = these_files$out_file)
+    unlink(these_files$out_file)
+    setwd(cd)
+    data_files <- c(data_files, zipfile)
+  }
+  scipiper::sc_indicate(outfile, data_file = data_files)
+  
+}
+
 
 zip_pb_export_groups <- function(outfile, file_info_df, site_groups,
                                  export = c('ice_flags','pb0_predictions','pball_predictions'),

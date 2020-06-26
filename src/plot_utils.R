@@ -1,4 +1,48 @@
 
+plot_domain_map <- function(fileout, lakes_sf_fl, source_ids, target_test_ids, target_expansion_ids, us_counties_sf, plot_crs = "+init=epsg:2811"){
+  all_lakes <- readRDS(lakes_sf_fl) %>% st_transform(crs = plot_crs)
+  
+  # simplify lakes to speed up the plot
+  all_lakes_simple <- sf::st_simplify(all_lakes, dTolerance = 40) %>% mutate(area = st_area(Shape) %>% as.numeric)
+  
+  conus_states <- group_by(us_counties_sf, state) %>% summarise() %>% st_geometry() %>% st_transform(crs = plot_crs)
+  
+  source_col <- '#ca0020'
+  test_t_col <- '#0571b0'
+  exp_t_col <- '#74add1'
+  
+  png(filename = fileout, width = 7, height = 4.75, units = 'in', res = 350)
+  par(omi = c(0,0,0,0), mai = c(0,0,0,0), xaxs = 'i', yaxs = 'i')
+  
+  #plot(conus_states[names(conus_states) %in% c('minnesota','wisconsin','michigan')], col = NA, border = 'grey50', lwd = 1.5,
+  #     reset = FALSE, expandBB = c(0.01,0.02,0.01,0.05))
+  
+  # set the viewbox:
+  all_modeled_lakes <- filter(all_lakes_simple, site_id %in% c(source_ids, target_test_ids, target_expansion_ids))
+  source_lakes <- filter(all_lakes_simple, site_id %in% source_ids)
+  target_test_lakes <- filter(all_lakes_simple, site_id %in% target_test_ids)
+  target_expansion_lakes <- filter(all_lakes_simple, site_id %in% target_expansion_ids)
+  
+  plot(st_geometry(all_modeled_lakes), col = NA, border = NA,
+       reset = FALSE)
+  
+   
+  plot(st_geometry(all_lakes_simple), col = 'grey70', border = 'grey70', lwd = 0.1, add = TRUE)
+  plot(conus_states, col = NA, border = 'grey50', lwd = 1.5, add = TRUE) 
+  
+  plot_modeled_lakes <- function(lakes_sf, col){
+    plot(st_geometry(lakes_sf), col = col, border = col, lwd = 0.2, add = TRUE)
+    plot(st_centroid(st_geometry(lakes_sf)), col = paste0(col, 'CC'), lwd = 0.5, add = TRUE, cex = 0.3)
+  }
+  
+  plot_modeled_lakes(target_expansion_lakes, exp_t_col)
+  plot_modeled_lakes(target_test_lakes, test_t_col)
+  plot_modeled_lakes(source_lakes, source_col)
+  
+  dev.off()
+  
+}
+
 
 plot_grouped_lakes_preview <- function(fileout, spatial_groups, county_bounds, site_ids_grouped, lakes_sf_fl){
   out <- plot_groups(fileout, spatial_groups, county_bounds, lakes_sf_fl)

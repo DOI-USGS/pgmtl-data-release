@@ -27,6 +27,9 @@ targets:
       - out_data/predict_lakes.png
       - out/5_pb0_predict_zips.yml
       - out/5_pball_predict_zips.yml
+      - out/5_pgmtl_predict_zips.yml
+      - out/5_pgmtl9_predict_zips.yml
+      - out/5_pbmtl_predict_zips.yml
 
 # pb0 predictions are here: 3_run/sync/pb0_{site_id}_temperatures.feather
 # pball predictions are here: 3_run/sync/pball_{site_id}_temperatures.feather
@@ -34,14 +37,47 @@ targets:
 # pball configs are here: 2_prep/sync/pball_{site_id}.nml
 
   pb0_predictions_df:
-    command: export_pb_df(site_ids = superset_release_ids,
-      exp_prefix = I('pb0'), exp_suffix = I('temperatures'),
-      file_template = I('../lake-temperature-process-models/3_run/sync/pb0_%s_temperatures.feather'))
+    command: export_from_table(model_out_fl = '../lake-temperature-process-models/3_run/out/pb0_src_trg_tasks.rds.ind',
+      exp_prefix = I('pb0'), exp_suffix = I('temperatures'))
 
+  # also need to extend depth!
+  pbmtl_predictions_df:
+    command: export_pbmtl_df(model_out_fl = '../lake-temperature-process-models/3_run/out/transfer_tasks.rds.ind', 
+      exp_prefix = I('pbmtl'), exp_suffix = I('temperatures'))
+      
+  mtl_predictions_df:
+    command: export_mtl_df(site_ids = target_ids,
+      dummy = I("2020-06-10"),
+      exp_prefix = I('pgmtl'), exp_suffix = I('temperatures'),
+      dir_template = I('in_data/mtl_outputs2_jared/%s'),
+      file_pattern = I('top_source0_nhdhr'))
+  
+  mtl9_predictions_df:
+    command: export_mtl_df(site_ids = target_ids,
+      dummy = I("2020-06-10"),
+      exp_prefix = I('pgmtl9'), exp_suffix = I('temperatures'),
+      dir_template = I('in_data/mtl_outputs2_jared/%s'),
+      file_pattern = I('9source_ensemble_output'))
+  
+  pball_ids:
+    command: c(source_ids, target_test_ids)
+    
   pball_predictions_df:
-    command: export_pb_df(site_ids = source_ids,
+    command: export_pb_df(site_ids = pball_ids,
       exp_prefix = I('pball'), exp_suffix = I('temperatures'),
       file_template = I('../lake-temperature-process-models/3_run/sync/pball_%s_temperatures.feather'))
+      
+  out/5_pgmtl9_predict_zips.yml:
+    command: zip_mtl_export_groups(target_name,
+      file_info_df = mtl9_predictions_df,
+      site_groups = site_ids_grouped,
+      export = I('pgmtl9_predictions'))
+      
+  out/5_pgmtl_predict_zips.yml:
+    command: zip_mtl_export_groups(target_name,
+      file_info_df = mtl_predictions_df,
+      site_groups = site_ids_grouped,
+      export = I('pgmtl_predictions'))
       
   out/5_pb0_predict_zips.yml:
     command: zip_pb_export_groups(target_name,
@@ -59,6 +95,14 @@ targets:
       export_stop = export_stop,
       export = I('pball_predictions'))
 
+  out/5_pbmtl_predict_zips.yml:
+    command: zip_pb_export_groups(target_name,
+      file_info_df = pbmtl_predictions_df,
+      site_groups = site_ids_grouped,
+      export_start = export_start,
+      export_stop = export_stop,
+      export = I('pbmtl_predictions'))
+      
   out_data/predict_lakes.png:
     command: plot_grouped_lakes_preview(target_name,
       spatial_groups, site_ids_grouped,

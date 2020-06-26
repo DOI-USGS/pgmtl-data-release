@@ -48,6 +48,9 @@ targets:
       - 05_predictions_sb_image
       - 05_predictions_sb_pb0
       - 05_predictions_sb_pball
+      - 05_predictions_sb_pgmtl9
+      - 05_predictions_sb_pgmtl
+      - 05_predictions_sb_pbmtl
       - 06_evaluation_sb_data
       - 06_evaluation_sb_xml
 
@@ -132,7 +135,19 @@ targets:
   05_predictions_sb_pball:
     command: sb_replace_files(sbid_05_predictions,
       file_hash = "out/5_pball_predict_zips.yml")
+  
+  05_predictions_sb_pgmtl9:      
+    command: sb_replace_files(sbid_05_predictions,
+      file_hash = "out/5_pgmtl9_predict_zips.yml")
+      
+  05_predictions_sb_pgmtl:      
+    command: sb_replace_files(sbid_05_predictions,
+      file_hash = "out/5_pgmtl_predict_zips.yml")
 
+  05_predictions_sb_pbmtl:      
+    command: sb_replace_files(sbid_05_predictions,
+      file_hash = "out/5_pbmtl_predict_zips.yml")
+      
   06_evaluation_sb_xml:
     command: sb_render_post_xml(sb_id_06_evaluation,
       "in_text/text_SHARED.yml",
@@ -144,7 +159,13 @@ targets:
       "out_data/pb0_matched_to_observations.zip",
       "out_data/pb0_evaluation.csv",
       "out_data/pball_matched_to_observations.zip",
-      "out_data/pball_evaluation.csv")
+      "out_data/pball_evaluation.csv",
+      "out_data/pgmtl9_matched_to_observations.zip",
+      "out_data/pgmtl9_evaluation.csv",
+      "out_data/pgmtl_matched_to_observations.zip",
+      "out_data/pgmtl_evaluation.csv",
+      "out_data/pbmtl_matched_to_observations.zip",
+      "out_data/pbmtl_evaluation.csv")
 
   # ------ SB IDs --------
 
