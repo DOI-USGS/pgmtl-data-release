@@ -26,7 +26,8 @@ targets:
     depends:
       - out_data/predict_lakes.png
       - out/5_pb0_predict_zips.yml
-      - out/5_pball_predict_zips.yml
+      # AHHHH don't have the right flag for this one!!
+      # - out/5_pball_predict_zips.yml
       - out/5_pgmtl_predict_zips.yml
       - out/5_pgmtl9_predict_zips.yml
       - out/5_pbmtl_predict_zips.yml
@@ -47,16 +48,16 @@ targets:
       
   mtl_predictions_df:
     command: export_mtl_df(site_ids = target_ids,
-      dummy = I("2020-06-10"),
+      dummy = I("2020-08-05"),
       exp_prefix = I('pgmtl'), exp_suffix = I('temperatures'),
-      dir_template = I('in_data/mtl_outputs2_jared/%s'),
-      file_pattern = I('top_source0_nhdhr'))
+      dir_template = I('in_data/mtl_outputs9_expanded/%s'),
+      file_pattern = I('top_source0_'))
   
   mtl9_predictions_df:
     command: export_mtl_df(site_ids = target_ids,
-      dummy = I("2020-06-10"),
+      dummy = I("2020-08-05"),
       exp_prefix = I('pgmtl9'), exp_suffix = I('temperatures'),
-      dir_template = I('in_data/mtl_outputs2_jared/%s'),
+      dir_template = I('in_data/mtl_outputs9_expanded/%s'),
       file_pattern = I('9source_ensemble_output'))
   
   pball_ids:
