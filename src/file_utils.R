@@ -43,20 +43,35 @@ xwalk_meteo_lat_lon <- function(meteo_fl, meteo_dir, ldas_grid){
 
 }
 
-create_metadata_file <- function(fileout, sites, table, lakes_sf, nml_json_fl, lat_lon_fl, meteo_fl_info, gnis_names_fl){
+create_metadata_file <- function(fileout, sites, table, lakes_sf, nml_json_fl, lat_lon_fl, 
+                                 meteo_fl_info, gnis_names_fl, source_meta_fl, target_meta_fl){
   sdf <- sf::st_transform(lakes_sf, 2811) %>%
     mutate(perim = lwgeom::st_perimeter_2d(Shape), area = sf::st_area(Shape), circle_perim = 2*pi*sqrt(area/pi), SDF = perim/circle_perim) %>%
     sf::st_drop_geometry() %>% select(site_id, SDF)
 
+  src_meta <- read_csv(source_meta_fl) %>% 
+    mutate(type = 'source') %>% 
+    select(-fullname, -glm_uncal_rmse)
+  
+  target_meta <- read_csv(target_meta_fl) %>% 
+    mutate(site_id = paste0('nhdhr_', target_id), type = 'target') %>% 
+    select(-fullname, -target_id, -pgdtl_rmse, -pb0_rmse, 
+           -mean_predicted_rmse_ensemble, -minimum_predicted_rmse_ensemble, 
+           -glm_uncal_rmse_third, -glm_uncal_rmse_full)
+  
+  mtl_meta <- bind_rows(src_meta, target_meta) %>% 
+    select(site_id, type, everything(), -SDF, -latitude, -longitude)
+  
   nml_list <- RJSONIO::fromJSON(nml_json_fl)
-
-  sites %>% inner_join((readRDS(lat_lon_fl)), by = 'site_id') %>%
+  
+  sites %>% inner_join(mtl_meta, by = 'site_id') %>% 
+    inner_join((readRDS(lat_lon_fl)), by = 'site_id') %>%
     inner_join(sdf, by = 'site_id') %>%
     rename(centroid_lon = longitude, centroid_lat = latitude) %>%
     inner_join(table, by = 'site_id') %>%
     inner_join(meteo_fl_info, by = 'site_id') %>% select(-pipeline_fl) %>%
     inner_join((readRDS(gnis_names_fl)), by = 'site_id') %>%
-    select(site_id, lake_name = GNIS_Name, group_id, meteo_filename = release_fl, everything()) %>%
+    select(site_id, lake_name = GNIS_Name, group_id, type, meteo_filename = release_fl, centroid_lon, centroid_lat, state, county, everything()) %>%
     write_csv(fileout)
 
 }
@@ -315,10 +330,12 @@ zip_mtl_export_groups <- function(outfile, file_info_df, site_groups,
     for (i in 1:nrow(these_files)){
       fileout <- file.path(tempdir(), these_files$out_file[i])
       
-      feather::read_feather(these_files$source_filepath[i]) %>% rename(depth = index) %>% 
-        pivot_longer(-depth, names_to = 'date', values_to = 'temp') %>% 
-        mutate(date = as.Date(date)) %>% 
-        pivot_wider(names_from = depth, values_from = temp, names_prefix = 'temp_') %>% 
+      feather::read_feather(these_files$source_filepath[i]) %>% 
+        # files are of the form
+        # A tibble: 6 x 21
+        # index      `0.0` `0.5` `1.0` `1.5` `2.0` `2.5` `3.0` ...
+        rename_at(vars(-1), function(x)paste0('temp_',x)) %>% # rename column names
+        mutate(date = as.Date(index)) %>% 
         write_csv(path = fileout)
     }
     
@@ -372,6 +389,7 @@ zip_pb_export_groups <- function(outfile, file_info_df, site_groups,
       switch(export,
              ice_flags = select(model_data, date, ice),
              pb0_predictions = select(model_data, date, contains('temp_')),
+             pbmtl_predictions = select(model_data, date, contains('temp_')), # NEED TO EXTEND???
              pball_predictions = select(model_data, date, contains('temp_'))) %>% 
         write_csv(path = fileout)
     }

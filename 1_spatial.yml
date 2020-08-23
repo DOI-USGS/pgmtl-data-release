@@ -89,7 +89,9 @@ targets:
       nml_json_fl = 'out_data/pb0_config.json',
       lat_lon_fl = '../lake-temperature-model-prep/7_config_merge/out/nml_lat_lon_values.rds',
       meteo_fl_info = xwalk_meteo_fl_names,
-      gnis_names_fl = '../lake-temperature-model-prep/2_crosswalk_munge/out/gnisname_nhdhr_xwalk.rds')
+      gnis_names_fl = '../lake-temperature-model-prep/2_crosswalk_munge/out/gnisname_nhdhr_xwalk.rds',
+      source_meta_fl = 'in_data/source_metadata - source_metadata.csv',
+      target_meta_fl = 'in_data/PG-MTL9_Expanded_2221Lakes_wMetadata - Sheet1.csv')
 
   out_data/modeling_domain_map.png:
     command: plot_domain_map(target_name,
