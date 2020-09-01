@@ -290,7 +290,29 @@ export_pbmtl_df <- function(model_out_fl, exp_prefix, exp_suffix){
     select(site_id, source_filepath, out_file, hash)
 }
 
-export_mtl_df <- function(site_ids, dir_template, file_pattern, exp_prefix, exp_suffix, dummy){
+export_mtl_df <- function(site_ids, dir_template, file_pattern, exp_prefix, exp_suffix, source_file, dummy){
+  
+  get_recent_top_source <- function(dir, file_pattern){
+    files <- tibble(file = dir(dir)) %>% filter(stringr::str_detect(file, file_pattern)) %>% pull(file)
+    if (length(files) == 1)
+      return(file.path(dir, files[1L]))
+    else {
+      # this is hacky, but take the NEWEST source pair
+      tibble(file = files) %>% mutate(mtime = {file.info(file.path(dir, file))$mtime}) %>% arrange(desc(mtime)) %>% 
+        head(1L) %>% pull(file) %>% file.path(dir, .)
+    }
+  }
+  
+  tibble(site_id = site_ids) %>% 
+    mutate(source_dir = sprintf(dir_template, site_id)) %>% rowwise() %>% 
+    #file.path(source_dir, {tibble(file = dir(source_dir)) %>% filter(stringr::str_detect(file, file_pattern)) %>% pull(file)})
+    mutate(source_filepath = get_recent_top_source(source_dir, file_pattern)) %>% 
+    ungroup() %>% mutate(hash = tools::md5sum(source_filepath)) %>% 
+    mutate(out_file = sprintf('%s_%s_%s.csv', exp_prefix, site_id, exp_suffix)) %>% 
+    select(site_id, source_filepath, out_file, hash)
+}
+export_mtl9_df <- function(site_ids, dir_template, file_pattern, exp_prefix, exp_suffix, dummy){
+  
   
   tibble(site_id = site_ids) %>% 
     mutate(source_dir = sprintf(dir_template, site_id)) %>% rowwise() %>% 
@@ -352,7 +374,7 @@ zip_mtl_export_groups <- function(outfile, file_info_df, site_groups,
 
 
 zip_pb_export_groups <- function(outfile, file_info_df, site_groups,
-                                 export = c('ice_flags','pb0_predictions','pball_predictions'),
+                                 export = c('ice_flags','pb0_predictions','pball_predictions', 'pbmtl_predictions'),
                                  export_start, export_stop){
 
   export <- match.arg(export)

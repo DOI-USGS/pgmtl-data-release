@@ -48,14 +48,15 @@ targets:
       
   mtl_predictions_df:
     command: export_mtl_df(site_ids = target_ids,
-      dummy = I("2020-08-05"),
+      dummy = I("2020-09-01"),
       exp_prefix = I('pgmtl'), exp_suffix = I('temperatures'),
       dir_template = I('in_data/mtl_outputs9_expanded/%s'),
-      file_pattern = I('top_source0_'))
+      file_pattern = I('top_source0_'),
+      source_file = 'in_data/PG-MTL_result_matrix_test_lakes_single_sources - PG-MTL_result_matrix_test_lakes_single_sources.csv')
   
   mtl9_predictions_df:
-    command: export_mtl_df(site_ids = target_ids,
-      dummy = I("2020-08-05"),
+    command: export_mtl9_df(site_ids = target_ids,
+      dummy = I("2020-08-25"),
       exp_prefix = I('pgmtl9'), exp_suffix = I('temperatures'),
       dir_template = I('in_data/mtl_outputs9_expanded/%s'),
       file_pattern = I('9source_ensemble_output'))
