@@ -21,7 +21,7 @@ match_glm_obs <- function(target_name, eval_data, predict_df){
       rename(obs = temp)
     
     feather::read_feather(this_file) %>% 
-      mutate(time = as.Date(lubridate::ceiling_date(DateTime, 'days'))) %>% select(time, contains('temp_')) %>%
+      mutate(time = as.Date(lubridate::floor_date(DateTime, 'days'))) %>% select(time, contains('temp_')) %>%
       pivot_longer(-time, names_to = 'depth', values_to = 'temp', names_prefix = 'temp_') %>%
       mutate(depth = as.numeric(depth)) %>% filter(time %in% these_obs$date) %>%
       rename(date = time, pred = temp) %>% 
@@ -43,7 +43,7 @@ match_extend_glm_obs <- function(target_name, eval_data, predict_df){
     
     # if max(depth) of obs is greater than max of data.frame, fill w/ tidyr
     model_preds <- feather::read_feather(this_file) %>% 
-      mutate(time = as.Date(lubridate::ceiling_date(DateTime, 'days'))) %>% select(time, contains('temp_'))
+      mutate(time = as.Date(lubridate::floor_date(DateTime, 'days'))) %>% select(time, contains('temp_'))
     
     z_max_pred <- tail(names(model_preds), 1) %>% {strsplit(., '_')[[1]][2]} %>% as.numeric()
     z_max_obs <- max(these_obs$depth)
