@@ -405,7 +405,7 @@ zip_pb_export_groups <- function(outfile, file_info_df, site_groups,
       fileout <- file.path(tempdir(), these_files$out_file[i])
       
       model_data <- feather::read_feather(these_files$source_filepath[i]) %>%
-        mutate(date = as.Date(lubridate::ceiling_date(DateTime, 'days'))) %>%
+        mutate(date = as.Date(lubridate::floor_date(DateTime, 'days'))) %>%
         filter(date >= export_start & date <= export_stop)
 
       switch(export,
