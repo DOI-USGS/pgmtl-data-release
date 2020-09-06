@@ -44,29 +44,24 @@ xwalk_meteo_lat_lon <- function(meteo_fl, meteo_dir, ldas_grid){
 }
 
 create_metadata_file <- function(fileout, sites, table, lakes_sf, nml_json_fl, lat_lon_fl, 
-                                 meteo_fl_info, gnis_names_fl, source_meta_fl, target_meta_fl){
+                                 meteo_fl_info, gnis_names_fl, meta_fl, target_ids, source_ids){
+  
+  source_type <- tibble(site_id = source_ids, type = 'source')
+  target_type <- tibble(site_id = target_ids, type = 'target')
+  site_types <- rbind(source_type, target_type)
   sdf <- sf::st_transform(lakes_sf, 2811) %>%
     mutate(perim = lwgeom::st_perimeter_2d(Shape), area = sf::st_area(Shape), circle_perim = 2*pi*sqrt(area/pi), SDF = perim/circle_perim) %>%
     sf::st_drop_geometry() %>% select(site_id, SDF)
-
-  src_meta <- read_csv(source_meta_fl) %>% 
-    mutate(type = 'source') %>% 
-    select(-fullname, -glm_uncal_rmse)
   
-  target_meta <- read_csv(target_meta_fl) %>% 
-    mutate(site_id = paste0('nhdhr_', target_id), type = 'target') %>% 
-    select(-fullname, -target_id, -pgdtl_rmse, -pb0_rmse, 
-           -mean_predicted_rmse_ensemble, -minimum_predicted_rmse_ensemble, 
-           -glm_uncal_rmse_third, -glm_uncal_rmse_full)
-  
-  mtl_meta <- bind_rows(src_meta, target_meta) %>% 
-    select(site_id, type, everything(), -SDF, -latitude, -longitude)
+  mtl_meta <- read_csv(meta_fl) %>% 
+    select(site_id = sitse_id, everything(), -glm_uncal_rmse_third, -glm_uncal_rmse_full, -`text name`, -SDF, -latitude, -longitude)
   
   nml_list <- RJSONIO::fromJSON(nml_json_fl)
   
   sites %>% inner_join(mtl_meta, by = 'site_id') %>% 
     inner_join((readRDS(lat_lon_fl)), by = 'site_id') %>%
     inner_join(sdf, by = 'site_id') %>%
+    inner_join(site_types, by = 'site_id') %>%
     rename(centroid_lon = longitude, centroid_lat = latitude) %>%
     inner_join(table, by = 'site_id') %>%
     inner_join(meteo_fl_info, by = 'site_id') %>% select(-pipeline_fl) %>%
