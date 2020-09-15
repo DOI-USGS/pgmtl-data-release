@@ -2,7 +2,7 @@ title: >-
   Predicting Water Temperature Dynamics of Unmonitored Lakes with Meta Transfer Learning: 2 Water temperature observations
 
 abstract: >-
-  Observed water temperatures from 1980-2018 were compiled for 2,378 lakes in the US. These data were used
+  Observed water temperatures from 1980-2018 were compiled for 2,332 lakes in the US. These data were used
   as training, test, and error-estimation data for process-guided deep learning models and the evaluation of process-based models.
   The data are formatted as a single csv (comma separated values) file with attributes corresponding to the unique combination of
   lake identifier, time, and depth. Data came from a variety of sources, including the Water Quality Portal,

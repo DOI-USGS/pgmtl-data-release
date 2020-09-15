@@ -192,10 +192,10 @@ zip_meteo_groups <- function(outfile, xwalk_meteo_fl_names, grouped_meteo_fls){
   scipiper::sc_indicate(outfile, data_file = data_files)
 }
 
-filter_resample_obs <- function(outfile, obs_feather, site_ids, obs_start, obs_stop, sample_res = 0.5){
+filter_resample_obs <- function(outfile, remove_sites, obs_feather, site_ids, obs_start, obs_stop, sample_res = 0.5){
   
   feather::read_feather(obs_feather) %>%
-    filter(site_id %in% site_ids) %>%
+    filter(site_id %in% site_ids & !site_id %in% remove_sites) %>% 
     filter(date >= obs_start & date <= obs_stop) %>%
     group_by(date, depth, site_id, source) %>%
     summarize(temp = mean(temp)) %>%

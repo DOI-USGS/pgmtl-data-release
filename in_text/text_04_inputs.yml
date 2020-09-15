@@ -2,7 +2,7 @@ title: >-
   Predicting Water Temperature Dynamics of Unmonitored Lakes with Meta Transfer Learning: 4 Model inputs (meteorological inputs and ice flags)
 
 abstract: >-
-  This dataset includes model inputs (specifically, weather and flags for predicted ice-cover) and is part of a larger data release of lake temperature model inputs and outputs for 909 lakes in the U.S.
+  This dataset includes model inputs (specifically, weather and flags for predicted ice-cover) and is part of a larger data release of lake temperature model inputs and outputs for 2,332 lakes in the U.S.
   state of Minnesota(https://doi.org/10.5066/P9PPHJE2).
 cross-cites:
   -

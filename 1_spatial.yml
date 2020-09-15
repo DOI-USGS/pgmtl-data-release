@@ -38,6 +38,9 @@ targets:
 #  model_export_ids:
 #    command: list(pb0 = modeled_lake_ids, pb_source = calibrated_lake_ids)
 
+  bad_ids:
+    command: extract_csv_column(filepath = 'in_data/bad_EPA_lab_sites.csv', column = I('site_id'))
+    
   source_ids:
     command: extract_csv_column(filepath = '../lake-temperature-process-models/3_run/out/RMSE_transfer_train_extended_glm.csv',
       column = I('source_id'))

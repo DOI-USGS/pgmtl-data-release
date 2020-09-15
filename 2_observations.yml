@@ -33,6 +33,7 @@ targets:
   
   tmp/filtered_observations.rds:
     command: filter_resample_obs(target_name, site_ids = filter_ids,
+      remove_sites = bad_ids,
       obs_start = export_start, obs_stop = export_stop, 
       sample_res = 0.5,
       obs_feather = 'in_data/PG-PB-MTL_obs.feather')
