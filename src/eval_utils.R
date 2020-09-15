@@ -21,7 +21,7 @@ match_glm_obs <- function(target_name, eval_data, predict_df){
       rename(obs = temp)
     
     feather::read_feather(this_file) %>% 
-      mutate(time = as.Date(lubridate::ceiling_date(DateTime, 'days'))) %>% select(time, contains('temp_')) %>%
+      mutate(time = as.Date(lubridate::floor_date(DateTime, 'days'))) %>% select(time, contains('temp_')) %>%
       pivot_longer(-time, names_to = 'depth', values_to = 'temp', names_prefix = 'temp_') %>%
       mutate(depth = as.numeric(depth)) %>% filter(time %in% these_obs$date) %>%
       rename(date = time, pred = temp) %>% 
@@ -43,7 +43,7 @@ match_extend_glm_obs <- function(target_name, eval_data, predict_df){
     
     # if max(depth) of obs is greater than max of data.frame, fill w/ tidyr
     model_preds <- feather::read_feather(this_file) %>% 
-      mutate(time = as.Date(lubridate::ceiling_date(DateTime, 'days'))) %>% select(time, contains('temp_'))
+      mutate(time = as.Date(lubridate::floor_date(DateTime, 'days'))) %>% select(time, contains('temp_'))
     
     z_max_pred <- tail(names(model_preds), 1) %>% {strsplit(., '_')[[1]][2]} %>% as.numeric()
     z_max_obs <- max(these_obs$depth)
@@ -75,12 +75,15 @@ match_pgmtl_obs <- function(target_name, eval_data, predict_df){
     this_id <- file_info$site_id[x]
     these_obs <- eval_data %>% filter(site_id %in% this_id) %>% 
       rename(obs = temp)
+    
     feather::read_feather(this_file) %>% 
-      rename(depth = index) %>% 
-      pivot_longer(-depth, names_to = 'date', values_to = 'temp') %>% 
-      mutate(date = as.Date(date), depth = as.numeric(depth)) %>% 
+      # files are of the form
+      # A tibble: 6 x 21
+      # index      `0.0` `0.5` `1.0` `1.5` `2.0` `2.5` `3.0` ...
+      mutate(date = as.Date(index)) %>% select(-index) %>% 
+      pivot_longer(-date, names_to = 'depth', values_to = 'pred') %>% 
+      mutate(depth = as.numeric(depth)) %>% 
       filter(date %in% these_obs$date) %>%
-      rename(pred = temp) %>% 
       right_join(these_obs, by = c("date", "depth")) %>% 
       select(site_id, date, depth, obs, pred, source) %>% 
       filter(!is.na(pred))

@@ -43,20 +43,30 @@ xwalk_meteo_lat_lon <- function(meteo_fl, meteo_dir, ldas_grid){
 
 }
 
-create_metadata_file <- function(fileout, sites, table, lakes_sf, nml_json_fl, lat_lon_fl, meteo_fl_info, gnis_names_fl){
+create_metadata_file <- function(fileout, sites, table, lakes_sf, nml_json_fl, lat_lon_fl, 
+                                 meteo_fl_info, gnis_names_fl, meta_fl, target_ids, source_ids){
+  
+  source_type <- tibble(site_id = source_ids, type = 'source')
+  target_type <- tibble(site_id = target_ids, type = 'target')
+  site_types <- rbind(source_type, target_type)
   sdf <- sf::st_transform(lakes_sf, 2811) %>%
     mutate(perim = lwgeom::st_perimeter_2d(Shape), area = sf::st_area(Shape), circle_perim = 2*pi*sqrt(area/pi), SDF = perim/circle_perim) %>%
     sf::st_drop_geometry() %>% select(site_id, SDF)
-
+  
+  mtl_meta <- read_csv(meta_fl) %>% 
+    select(site_id = sitse_id, everything(), -glm_uncal_rmse_third, -glm_uncal_rmse_full, -`text name`, -SDF, -latitude, -longitude)
+  
   nml_list <- RJSONIO::fromJSON(nml_json_fl)
-
-  sites %>% inner_join((readRDS(lat_lon_fl)), by = 'site_id') %>%
+  
+  sites %>% inner_join(mtl_meta, by = 'site_id') %>% 
+    inner_join((readRDS(lat_lon_fl)), by = 'site_id') %>%
     inner_join(sdf, by = 'site_id') %>%
+    inner_join(site_types, by = 'site_id') %>%
     rename(centroid_lon = longitude, centroid_lat = latitude) %>%
     inner_join(table, by = 'site_id') %>%
     inner_join(meteo_fl_info, by = 'site_id') %>% select(-pipeline_fl) %>%
     inner_join((readRDS(gnis_names_fl)), by = 'site_id') %>%
-    select(site_id, lake_name = GNIS_Name, group_id, meteo_filename = release_fl, everything()) %>%
+    select(site_id, lake_name = GNIS_Name, group_id, type, meteo_filename = release_fl, centroid_lon, centroid_lat, state, county, everything()) %>%
     write_csv(fileout)
 
 }
@@ -182,10 +192,10 @@ zip_meteo_groups <- function(outfile, xwalk_meteo_fl_names, grouped_meteo_fls){
   scipiper::sc_indicate(outfile, data_file = data_files)
 }
 
-filter_resample_obs <- function(outfile, obs_feather, site_ids, obs_start, obs_stop, sample_res = 0.5){
+filter_resample_obs <- function(outfile, remove_sites, obs_feather, site_ids, obs_start, obs_stop, sample_res = 0.5){
   
   feather::read_feather(obs_feather) %>%
-    filter(site_id %in% site_ids) %>%
+    filter(site_id %in% site_ids & !site_id %in% remove_sites) %>% 
     filter(date >= obs_start & date <= obs_stop) %>%
     group_by(date, depth, site_id, source) %>%
     summarize(temp = mean(temp)) %>%
@@ -275,7 +285,29 @@ export_pbmtl_df <- function(model_out_fl, exp_prefix, exp_suffix){
     select(site_id, source_filepath, out_file, hash)
 }
 
-export_mtl_df <- function(site_ids, dir_template, file_pattern, exp_prefix, exp_suffix, dummy){
+export_mtl_df <- function(site_ids, dir_template, file_pattern, exp_prefix, exp_suffix, source_file, dummy){
+  
+  get_recent_top_source <- function(dir, file_pattern){
+    files <- tibble(file = dir(dir)) %>% filter(stringr::str_detect(file, file_pattern)) %>% pull(file)
+    if (length(files) == 1)
+      return(file.path(dir, files[1L]))
+    else {
+      # this is hacky, but take the NEWEST source pair
+      tibble(file = files) %>% mutate(mtime = {file.info(file.path(dir, file))$mtime}) %>% arrange(desc(mtime)) %>% 
+        head(1L) %>% pull(file) %>% file.path(dir, .)
+    }
+  }
+  
+  tibble(site_id = site_ids) %>% 
+    mutate(source_dir = sprintf(dir_template, site_id)) %>% rowwise() %>% 
+    #file.path(source_dir, {tibble(file = dir(source_dir)) %>% filter(stringr::str_detect(file, file_pattern)) %>% pull(file)})
+    mutate(source_filepath = get_recent_top_source(source_dir, file_pattern)) %>% 
+    ungroup() %>% mutate(hash = tools::md5sum(source_filepath)) %>% 
+    mutate(out_file = sprintf('%s_%s_%s.csv', exp_prefix, site_id, exp_suffix)) %>% 
+    select(site_id, source_filepath, out_file, hash)
+}
+export_mtl9_df <- function(site_ids, dir_template, file_pattern, exp_prefix, exp_suffix, dummy){
+  
   
   tibble(site_id = site_ids) %>% 
     mutate(source_dir = sprintf(dir_template, site_id)) %>% rowwise() %>% 
@@ -315,10 +347,12 @@ zip_mtl_export_groups <- function(outfile, file_info_df, site_groups,
     for (i in 1:nrow(these_files)){
       fileout <- file.path(tempdir(), these_files$out_file[i])
       
-      feather::read_feather(these_files$source_filepath[i]) %>% rename(depth = index) %>% 
-        pivot_longer(-depth, names_to = 'date', values_to = 'temp') %>% 
-        mutate(date = as.Date(date)) %>% 
-        pivot_wider(names_from = depth, values_from = temp, names_prefix = 'temp_') %>% 
+      feather::read_feather(these_files$source_filepath[i]) %>% 
+        # files are of the form
+        # A tibble: 6 x 21
+        # index      `0.0` `0.5` `1.0` `1.5` `2.0` `2.5` `3.0` ...
+        rename_at(vars(-1), function(x)paste0('temp_',x)) %>% # rename column names
+        mutate(date = as.Date(index)) %>% 
         write_csv(path = fileout)
     }
     
@@ -335,7 +369,7 @@ zip_mtl_export_groups <- function(outfile, file_info_df, site_groups,
 
 
 zip_pb_export_groups <- function(outfile, file_info_df, site_groups,
-                                 export = c('ice_flags','pb0_predictions','pball_predictions'),
+                                 export = c('ice_flags','pb0_predictions','pball_predictions', 'pbmtl_predictions'),
                                  export_start, export_stop){
 
   export <- match.arg(export)
@@ -366,12 +400,13 @@ zip_pb_export_groups <- function(outfile, file_info_df, site_groups,
       fileout <- file.path(tempdir(), these_files$out_file[i])
       
       model_data <- feather::read_feather(these_files$source_filepath[i]) %>%
-        mutate(date = as.Date(lubridate::ceiling_date(DateTime, 'days'))) %>%
+        mutate(date = as.Date(lubridate::floor_date(DateTime, 'days'))) %>%
         filter(date >= export_start & date <= export_stop)
 
       switch(export,
              ice_flags = select(model_data, date, ice),
              pb0_predictions = select(model_data, date, contains('temp_')),
+             pbmtl_predictions = select(model_data, date, contains('temp_')), # NEED TO EXTEND???
              pball_predictions = select(model_data, date, contains('temp_'))) %>% 
         write_csv(path = fileout)
     }

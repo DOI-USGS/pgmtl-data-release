@@ -38,8 +38,11 @@ targets:
 #  model_export_ids:
 #    command: list(pb0 = modeled_lake_ids, pb_source = calibrated_lake_ids)
 
+  bad_ids:
+    command: extract_csv_column(filepath = 'in_data/bad_EPA_lab_sites.csv', column = I('site_id'))
+    
   source_ids:
-    command: extract_csv_column(filepath = '../lake-temperature-process-models/3_run/out/RMSE_transfer_glm.csv',
+    command: extract_csv_column(filepath = '../lake-temperature-process-models/3_run/out/RMSE_transfer_train_extended_glm.csv',
       column = I('source_id'))
   
   target_test_ids:
@@ -89,7 +92,10 @@ targets:
       nml_json_fl = 'out_data/pb0_config.json',
       lat_lon_fl = '../lake-temperature-model-prep/7_config_merge/out/nml_lat_lon_values.rds',
       meteo_fl_info = xwalk_meteo_fl_names,
-      gnis_names_fl = '../lake-temperature-model-prep/2_crosswalk_munge/out/gnisname_nhdhr_xwalk.rds')
+      gnis_names_fl = '../lake-temperature-model-prep/2_crosswalk_munge/out/gnisname_nhdhr_xwalk.rds',
+      meta_fl = 'in_data/All_Metadata - Sheet1.csv',
+      target_ids = target_ids,
+      source_ids = source_ids)
 
   out_data/modeling_domain_map.png:
     command: plot_domain_map(target_name,
