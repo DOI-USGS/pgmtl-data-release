@@ -2,8 +2,9 @@ title: >-
   Predicting Water Temperature Dynamics of Unmonitored Lakes with Meta Transfer Learning: 4 Model inputs (meteorological inputs and ice flags)
 
 abstract: >-
-  This dataset includes model inputs (specifically, weather and flags for predicted ice-cover) and is part of a larger data release of lake temperature model inputs and outputs for 2,332 lakes in the U.S.
-  state of Minnesota(https://doi.org/10.5066/P9PPHJE2).
+  This dataset includes model inputs (specifically, weather and flags for predicted ice-cover) and is part of a larger data release of lake 
+  temperature model inputs and outputs for 2,332 lakes in the U.S.
+  states of North Dakota, South Dakota, Minnesota, Wisconsin, and Michigan (https://doi.org/10.5066/P9PPHJE2).
 cross-cites:
   -
     authors: ['Kenneth E. Mitchell','Dag Lohmann','Paul R. Houser','Eric F. Wood','John C. Schaake','Alan Robock','Brian A. Cosgrove','Justin Sheffield','Qingyun Duan','Lifeng Luo','R. Wayne Higgins','Rachel T. Pinker','J. Dan Tarpley','Dennis P. Lettenmaier','Curtis H. Marshall','Jared K. Entin','Ming Pan','Wei Shi','Victor Koren','Jesse Meng','Bruce H. Ramsay','Andrew A. Bailey']
@@ -18,7 +19,40 @@ cross-cites:
     pubdate: 2019
     link: https://doi.org/10.5194/gmd-12-473-2019
 
-
+entities:
+  -
+    data-name: input_cells.png
+    data-description: An image of the groupings describing the location of each of these files
+    attributes:
+    -
+      attr-label: PNG image
+      attr-def: NA
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: NA
+  -
+    data-name: inputs_{group_id}_N{minN-maxN}_W{minW-maxW}.zip
+    data-description: A zip file containing individual meteorological csv files that were used as inputs to run lake temperature simulations
+    attributes:
+    -
+      attr-label: FILL THIS IN
+      attr-def: NA
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: NA
+  -
+    data-name: ice_flags_{group_id}_N{minN-maxN}_W{minW-maxW}.zip
+    data-description: A zip file containing individual lake ice csv files that capture whether the lake was estimated to have ice cover for each day of the simulation
+    attributes:
+    -
+      attr-label: FILL THIS IN
+      attr-def: NA
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: NA
 
 build-environment: Multiple computer systems were used to generate these data, including linux, OSX. The open source language R was used on all systems, as well as the open-source model GLM.
 

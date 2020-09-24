@@ -22,11 +22,25 @@ cross-cites:
     pubdate: 2016
     form: publication
     link: http://dx.doi.org/10.5066/F7DV1H10
+  -
+    authors: ['John T.O. Kirk']
+    title: >-
+       Light and Photosynthesis in Aquatic Ecosystems
+    pubdate: 1994
+    form: Book
+    link: https://doi.org/10.1017/CBO9780511623370
+  -
+    authors: ['Richard C. Lathrop', 'Richard A. Lillie']
+    title: >-
+       Thermal Stratification of Wisconsin Lakes
+    pubdate: 1980
+    form: publication
+    link: http://images.library.wisc.edu/WI/EFacs/transactions/WT1980/reference/wi.wt1980.rclathrop.pdf
 
 entities:
   -
     data-name: 01_spatial.zip
-    data-description: GIS polygon data for the 2,378 lakes included in this study
+    data-description: GIS polygon data for the 2,332 lakes included in this study
     attributes:
     -
       attr-label: site_id
@@ -39,7 +53,7 @@ entities:
       data-units: NA
   -
     data-name: lake_metadata.csv
-    data-description: Select metadata for the 2,378 lakes included in this study
+    data-description: Select metadata for the 2,332 lakes included in this study
     attributes:
     -
       attr-label: site_id
@@ -51,26 +65,51 @@ entities:
       data-max: NA
       data-units: NA
     -
-      attr-label: group_id
+      attr-label: lake_name
       attr-def: >-
-        group identifier for files that are spatially grouped in this data release. Groups are based on lat/lon bounding boxes.
-      attr-defs: NA
+        The GNIS name of the lake when applicable, "NA" if no GNIS name exists for this lake. Usually the common name of the lake. 
+      attr-defs: >-
+        https://www.usgs.gov/core-science-systems/ngp/board-on-geographic-names
       data-min: NA
       data-max: NA
       data-units: NA
     -
-      attr-label: centroid_lon centroid_lat
+      attr-label: group_id
+      attr-def: >-
+        group identifier for files that are spatially grouped in this data release. Groups are based on lat/lon bounding boxes.
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: NA
+    -
+      attr-label: type
+      attr-def: >-
+        the type of lake, "source" or "target". Models are trained or calibrated for source lakes and applied to target lakes. 
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: NA
+    -
+      attr-label: meteo_filename
+      attr-def: >-
+        The name of the file that contains the meteorological time series data used to simulate this lake. See "Inputs" for accessing these files 
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: NA
+    -
+      attr-label: centroid_lon
       attr-def: longitude (decimal-degrees) of the centroid of this lake (for purposes of calculating group_id and linking meteorological data cells)
       attr-defs: NA
-      data-min: -99.42552
-      data-max: -83.08698
+      data-min: -99.20593
+      data-max: -83.15136
       data-units: decimal-degrees
     -
       attr-label: centroid_lat
       attr-def: latitude (decimal-degrees) of the centroid of this lake (for purposes of calculating group_id and linking meteorological data cells)
       attr-defs: NA
-      data-min: 40.9117
-      data-max: 48.88107
+      data-min: 41.71769
+      data-max: 48.7792
       data-units: decimal-degrees
     -
       attr-label: state
@@ -91,18 +130,184 @@ entities:
       data-max: NA
       data-units: NA
     -
-      attr-label: lake_name
-      attr-def: GNIS Name for each lake. Usually the common name of the lake. NA when missing.
-      attr-defs: >-
-        http://nhd.usgs.gov/
-      data-min: NA
-      data-max: NA
+      attr-label: K_d
+      attr-def: The estimated light attenuation coefficent for the lake water clarity
+      attr-defs: See Kirk 1994
+      data-min: 0.132
+      data-max: 11.33
+      data-units: >-
+        m^-1
+    -
+      attr-label: max_depth
+      attr-def: The estimated maximum depth of the lake in meters
+      attr-defs: This data release
+      data-min: 0.3048
+      data-max: 141.4272
+      data-units: meters
+    -
+      attr-label: surface_area
+      attr-def: The estimated surface area of the lake in square meters
+      attr-defs: This data release
+      data-min: 40254.44
+      data-max: 929821943
+      data-units: meters
+    -
+      attr-label: sw_mean
+    -
+      attr-label: sw_std
+    -
+      attr-label: lw_mean
+    -
+      attr-label: lw_std
+    -
+      attr-label: at_mean
+    -
+      attr-label: at_std
+    -
+      attr-label: rh_mean
+    -
+      attr-label: rh_std
+    -
+      attr-label: ws_mean
+    -
+      attr-label: ws_std
+    -
+      attr-label: rain_mean
+    -
+      attr-label: rain_std
+    -
+      attr-label: snow_mean
+    -
+      attr-label: snow_std
+    -
+      attr-label: sw_mean_sp
+    -
+      attr-label: sw_std_sp
+    -
+      attr-label: lw_mean_sp
+    -
+      attr-label: lw_std_sp
+    -
+      attr-label: at_mean_sp
+    -
+      attr-label: at_std_sp
+    -
+      attr-label: rh_mean_sp
+    -
+      attr-label: rh_std_sp
+    -
+      attr-label: ws_mean_sp
+    -
+      attr-label: ws_std_sp
+    -
+      attr-label: rain_mean_sp
+    -
+      attr-label: rain_std_sp
+    -
+      attr-label: snow_mean_sp
+    -
+      attr-label: snow_std_sp
+    -
+      attr-label: sw_mean_au
+    -
+      attr-label: sw_std_au
+    -
+      attr-label: lw_mean_au
+    -
+      attr-label: lw_std_au
+    -
+      attr-label: at_mean_au
+    -
+      attr-label: at_std_au
+    -
+      attr-label: rh_mean_au
+    -
+      attr-label: rh_std_au
+    -
+      attr-label: ws_mean_au
+    -
+      attr-label: ws_std_au
+    -
+      attr-label: rain_mean_au
+    -
+      attr-label: rain_std_au
+    -
+      attr-label: snow_mean_au
+    -
+      attr-label: snow_std_au
+    -
+      attr-label: sw_mean_wi
+    -
+      attr-label: sw_std_wi
+    -
+      attr-label: lw_mean_wi
+    -
+      attr-label: lw_std_wi
+    -
+      attr-label: at_mean_wi
+    -
+      attr-label: at_std_wi
+    -
+      attr-label: rh_mean_wi
+    -
+      attr-label: rh_std_wi
+    -
+      attr-label: ws_mean_wi
+    -
+      attr-label: ws_std_wi
+    -
+      attr-label: rain_mean_wi
+    -
+      attr-label: rain_std_wi
+    -
+      attr-label: snow_mean_wi
+    -
+      attr-label: snow_std_wi
+    -
+      attr-label: n_obs
+    -
+      attr-label: n_prof
+    -
+      attr-label: n_obs_wi
+    -
+      attr-label: n_obs_sp
+    -
+      attr-label: n_obs_wu
+    -
+      attr-label: n_obs_au
+    -
+      attr-label: obs_depth_mean_frac
+    -
+      attr-label: obs_temp_mean
+    -
+      attr-label: obs_temp_std
+    -
+      attr-label: obs_temp_skew
+    -
+      attr-label: obs_temp_kurt
+    -
+      attr-label: zero_temp_doy
+    -
+      attr-label: at_amp
+    -
+      attr-label: lathrop_strat
+      attr-def: An boolean value for the Latrop and Lillie estimate of whether a lake is likely to be stratified
+      attr-defs: See Lathrop and Lillie 1980
+      data-min: 0
+      data-max: 1
       data-units: NA
+    -
+      attr-label: glm_strat_perc
+    -
+      attr-label: ws_sp_mix
+    -
+      attr-label: SDF
+      
 
-data-name: Polygons for study lakes
+data-name: Polygons for study lakes; metadata file describing properties of each lake
 data-description: Shapefile of study lakes included in this data release; metadata file for lakes in this data release
 
-file-format: Shapefile Data Set
+file-format: Shapefile Data Set; comma-delimited metadata file
 
 build-environment: >-
   This dataset was generated using open source tools available in the R programming language (R version 3.6.1 (2019-07-05)).

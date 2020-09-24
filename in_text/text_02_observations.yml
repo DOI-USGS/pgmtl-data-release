@@ -2,13 +2,12 @@ title: >-
   Predicting Water Temperature Dynamics of Unmonitored Lakes with Meta Transfer Learning: 2 Water temperature observations
 
 abstract: >-
-  Observed water temperatures from 1980-2018 were compiled for 2,332 lakes in the US. These data were used
+  Observed water temperatures from 1980-2019 were compiled for 2,332 lakes in the US. These data were used
   as training, test, and error-estimation data for process-guided deep learning models and the evaluation of process-based models.
   The data are formatted as a single csv (comma separated values) file with attributes corresponding to the unique combination of
   lake identifier, time, and depth. Data came from a variety of sources, including the Water Quality Portal,
   the North Temperate Lakes Long-Term Ecological Research Project, and digitized temperature
-  records from the MN Department of Natural Resources.
-  This dataset is part of a larger data release of lake temperature model inputs and outputs for these same lakes (https://doi.org/10.5066/XXXXX).
+  records from the MN Department of Natural Resources. This dataset is part of a larger data release of lake temperature model inputs and outputs for these same lakes (https://doi.org/10.5066/XXXXX).
 
 cross-cites:
   -
@@ -21,7 +20,7 @@ cross-cites:
 entities:
   -
     data-name: temperature_observations.zip
-    data-description: Temperature observation data for 2,378 lakes
+    data-description: Temperature observation data for 2,332 lakes
     attributes:
     -
       attr-label: site_id
@@ -35,28 +34,30 @@ entities:
     -
       attr-label: date
       attr-def: Date of temperature measurement
-      attr-defs: NA
-      data-min: NA
-      data-max: NA
+      attr-defs: This data release
+      data-min: >-
+        1980-01-02
+      data-max: >-
+        2019-09-30
       data-units: NA
     -
       attr-label: depth
       attr-def: Depth of temperature measurement below water surface
-      attr-defs: NA
+      attr-defs: This data release
       data-min: 0
-      data-max: NA
+      data-max: 155.5
       data-units: meters
     -
       attr-label: temp
       attr-def: Water temperature
-      attr-defs: NA
-      data-min: NA
-      data-max: NA
+      attr-defs: This data release
+      data-min: 0
+      data-max: 39.99
       data-units: degrees C
     -
       attr-label: source_id
       attr-def: The source of these data; a monitoring entity or the name of a file sent by a state agency
-      attr-defs: NA
+      attr-defs: This data release
       data-min: NA
       data-max: NA
       data-units: NA
