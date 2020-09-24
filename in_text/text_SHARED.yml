@@ -1,9 +1,9 @@
-authors: ["Jordan S. Read", "Jared Willard", "Alison P. Appling", "Samantha K. Oliver"]
+authors: ["Jared Willard", "Jordan Stuart Read", "Alison P. Appling", "Samantha K. Oliver"]
 pubdate: 2020
 doi: https://doi.org/10.5066/P9I00WFR
 abstract: >-
   Climate change has been shown to influence lake temperatures in different ways. To better understand the diversity of lake responses to climate change and give managers tools to manage individual lakes,
-  we focused on improving prediction accuracy for daily water temperature profiles in 2,378 lakes in North Dakota, South Dakota, Minnesota, Wisconsin, Illinois, and Michigan during 1980-2019.
+  we focused on improving prediction accuracy for daily water temperature profiles in 2,233 lakes in North Dakota, South Dakota, Minnesota, Wisconsin, and Michigan during 1980-2019.
 
 # ----associated publication----
 larger-cites:
@@ -23,7 +23,7 @@ themekeywords: ["machine learning", "deep learning", "hybrid modeling", "water",
 usage-rules: >-
   These data are subject to change and are not citable until reviewed and approved for official publication by the USGS
 
-descgeog: "Lake polygons as defined by the national hydrography dataset medium resolution"
+descgeog: "Lake polygons as defined by the national hydrography dataset high resolution"
 data-publisher: U.S. Geological Survey
 
 # ----contacts----
@@ -54,11 +54,12 @@ funding-credits: >-
   This research used resources of the Core Science Analytics and Synthesis Advanced Research Computing program at the U.S. Geological Survey.
 
 process-description: >-
-  At the core of the modeling framework is a lake hydrodynamic model that uses inputs of lake-specific properties and local meteorology to estimate water temperature.
-  Our chosen model is the open source, General Lake Model (GLM) version 3. GLM is a one-dimensional dynamical model which simplifies lakes using a vertical approximation,
-  where horizontal variability is ignored. GLM uses a Lagrangian approach to layer structure where layers can split and combine based on changing vertical gradients.
-  GLM is a modern, implementation of other one-dimensional models. We used GLM to run individual lake simulations according to the processes described in Winslow et al. 2017.
-  Outputs for water temperature were extracted at various depths and written or summarized to the files included in this set of data. The glmtools R package was used for this processing.
+  This data release includes predictions generated from various types of models, including a process-guided deep learning (PGDL) model and the general lake model (GLM). 
+  Both model types use inputs of lake-specific properties and local meteorology to estimate water temperature. The PGDL model is described in Read et al. 2019 and the GLM 
+  is described in Hipsey et al. 2019 and an example of its application elsewhere is in Winslow et al. 2017. In order to test the accuracy of applying these models on lakes with 
+  no observations, a meta-transfer learning model was designed that selects a calibrated or trained source model from GLM or PGDL to be applied on a target lake. This data release
+  includes the metadata necessary to build these models, the input data necessary to drive these models, outputs from the models, and the data used to train/calibrate and evaluate
+  model performance.
 
 distro-person: Jordan S. Read
 liability-statement: >-
