@@ -7,7 +7,8 @@ abstract: >-
   The data are formatted as a single csv (comma separated values) file with attributes corresponding to the unique combination of
   lake identifier, time, and depth. Data came from a variety of sources, including the Water Quality Portal,
   the North Temperate Lakes Long-Term Ecological Research Project, and digitized temperature
-  records from the MN Department of Natural Resources. This dataset is part of a larger data release of lake temperature model inputs and outputs for these same lakes (https://doi.org/10.5066/XXXXX).
+  records from the MN Department of Natural Resources. This dataset is part of a larger data release 
+  of lake temperature model inputs and outputs for these same lakes (https://doi.org/10.5066/P9I00WFR).
 
 cross-cites:
   -

@@ -34,7 +34,94 @@ cross-cites:
        USGS Yeti Supercomputer
     pubdate: 2019
     link: https://doi.org/10.5066/F7D798MJ
-
+    
+entities:
+  -
+    data-name: all_MTL_RMSE_predictions.csv
+    data-description: MTL predictions for all 145 source lakes and 305 target lakes for PB and PGDL transfers
+    attributes:
+    -
+      attr-label: target_id
+      attr-def: >-
+        Lake identification number for this dataset. Is the Prmnn_I prefixed with source, as "nhd_{Prmnn_I}". The "target" lake being predicted
+      attr-defs: >-
+        http://nhd.usgs.gov/
+      data-min: NA
+      data-max: NA
+      data-units: NA
+    -
+      attr-label: source_id
+      attr-def: >-
+        Lake identification number for this dataset. Is the Prmnn_I prefixed with source, as "nhd_{Prmnn_I}". The "source" lake being transfered to predict temperatures of the target lake
+      attr-defs: >-
+        http://nhd.usgs.gov/
+      data-min: NA
+      data-max: NA
+      data-units: NA
+    -
+      attr-label: actual_pgdl_mtl_rmse
+      attr-def: >-
+        Root-mean square error (in degrees C) of the process-guided deep learning transfered model predictions. 
+      attr-defs: >-
+        https://en.wikipedia.org/wiki/Root-mean-square_deviation
+      data-min: 0.907
+      data-max: 20.149
+      data-units: degrees C
+    -
+      attr-label: pred_pgdl_mtl_rmse
+      attr-def: >-
+        Predicted root-mean square error (in degrees C) of the process-guided deep learning transfered model predictions. 
+      attr-defs: >-
+        https://en.wikipedia.org/wiki/Root-mean-square_deviation
+      data-min: 0.205
+      data-max: 15.141
+      data-units: degrees C
+    -
+      attr-label: actual_pgdl_mtl_rank
+      attr-def: Rank of performance (performance as estimated as RMSE in degrees C) of transfered process-guided deep learning source model in predicting target lake water temperatures.
+      attr-defs: This data release
+      data-min: 1
+      data-max: 145
+      data-units: integer
+    -
+      attr-label: pred_pgdl_mtl_rank
+      attr-def: Predicted rank of performance (performance as estimated as RMSE in degrees C) of transfered process-guided deep learning source model in predicting target lake water temperatures.
+      attr-defs: This data release
+      data-min: 1
+      data-max: 145
+      data-units: integer
+    -
+      attr-label: actual_pb_mtl_rmse
+      attr-def: >-
+        Root-mean square error (in degrees C) of the process-based transfered model predictions. 
+      attr-defs: >-
+        https://en.wikipedia.org/wiki/Root-mean-square_deviation
+      data-min: 0.907
+      data-max: 20.149
+      data-units: degrees C
+    -
+      attr-label: pred_pb_mtl_rmse
+      attr-def: >-
+        Predicted root-mean square error (in degrees C) of the process-based transfered model predictions. 
+      attr-defs: >-
+        https://en.wikipedia.org/wiki/Root-mean-square_deviation
+      data-min: 0.205
+      data-max: 15.141
+      data-units: degrees C
+    -
+      attr-label: actual_pb_mtl_rank
+      attr-def: Rank of performance (performance as estimated as RMSE in degrees C) of transfered process-based source model in predicting target lake water temperatures.
+      attr-defs: This data release
+      data-min: 1
+      data-max: 145
+      data-units: integer
+    -
+      attr-label: pred_pb_mtl_rank
+      attr-def: Predicted rank of performance (performance as estimated as RMSE in degrees C) of transfered process-based source model in predicting target lake water temperatures.
+      attr-defs: This data release
+      data-min: 1
+      data-max: 145
+      data-units: integer      
 build-environment: >-
   For PB and PB0 predictions we used USGS Advanced Research Computing, USGS Yeti Supercomputer (https://doi.org/10.5066/F7D798MJ); process-based predictions were generated with the following open source tools available in the R programming language (R version 3.5.0 (2018-04-23)).\n
   The computing platform for generating data and metadata was x86_64-redhat-linux-gnu. R packages loaded into this environment: dplyr, version: 0.8.1; glmtools, version: 0.15.0; rLakeAnalyzer, version: 1.11.4; GLMr, version: 3.1.14; readr, version: 1.3.1;

@@ -8,7 +8,7 @@ abstract: >-
   <br/>The data are organized into these items:</p>
   <ol>
   <li><a href="https://www.sciencebase.gov/catalog/item/5ebe564782ce476925e44b26">Lake Information</a> - A lake metadata file and one shapefile of polygons for all 2,332 lakes in this study</li>
-  <li><a href="https://www.sciencebase.gov/catalog/item/5ebe566a82ce476925e44b29">Observations</a> - Temperature observations for X of the 2,332 lakes used in this study</li>
+  <li><a href="https://www.sciencebase.gov/catalog/item/5ebe566a82ce476925e44b29">Observations</a> - Temperature observations for the 2,332 lakes used in this study</li>
   <li><a href="https://www.sciencebase.gov/catalog/item/5ebe567782ce476925e44b2b">Model Configurations</a> - Model parameters and metadata used to configure models</li>
   <li><a href="https://www.sciencebase.gov/catalog/item/5ebe568182ce476925e44b2d">Model Inputs</a> - Data used to drive predictive models (ice-flags and daily meteorology)</li>
   <li><a href="https://www.sciencebase.gov/catalog/item/5ebe569582ce476925e44b2f">Model Predictions</a> - Predictions for water temperature</li>

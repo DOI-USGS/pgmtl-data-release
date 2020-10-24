@@ -3,7 +3,8 @@ title: >-
 
 abstract: >-
   This dataset provides shapefile outlines of the 2,332 lakes that had temperature modeled as part of this study.
-  The format is a shapefile for all lakes combined (.shp, .shx, .dbf, and .prj files). A csv file of lake metadata is also included.
+  The format is a shapefile for all lakes combined (.shp, .shx, .dbf, and .prj files). A csv file of lake metadata is included, which includes lake metadata
+  and all features that were considered for the meta transfer model (not all meta features were used).
   This dataset is part of a larger data release of lake temperature model inputs and outputs for 2,332 lakes in the U.S.
   (https://doi.org/10.5066/P9I00WFR).
 
@@ -153,48 +154,158 @@ entities:
       data-units: meters
     -
       attr-label: sw_mean
+      attr-def: The mean solar radiation during the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: W m-2
     -
       attr-label: sw_std
+      attr-def: The standard deviation of solar radiation during the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: W m-2
     -
       attr-label: lw_mean
+      attr-def: The mean longwave radiation during the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: W m-2
     -
       attr-label: lw_std
+      attr-def: The standard deviation of longwave radiation during the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: W m-2
     -
       attr-label: at_mean
+      attr-def: The mean of air temperature during the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: degrees C
     -
       attr-label: at_std
+      attr-def: The standard deviation of air temperature during the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: degrees C
     -
       attr-label: rh_mean
+      attr-def: The mean of relative humidity during the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: %
     -
       attr-label: rh_std
+      attr-def: The standard deviation of relative humidity during the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: %
     -
       attr-label: ws_mean
+      attr-def: The mean of wind speed during the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: m -s
     -
       attr-label: ws_std
+      attr-def: The standard deviation of wind speed during the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: m -s
     -
       attr-label: rain_mean
+      attr-def: The mean of rainfall rates during the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: m day−1
     -
       attr-label: rain_std
+      attr-def: The standard deviation of rainfall rates during the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: m day−1
     -
       attr-label: snow_mean
+      attr-def: The mean of snowfall rates during the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: m day−1
     -
       attr-label: snow_std
+      attr-def: The standard deviation of snowfall rates during the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: m day−1
     -
       attr-label: sw_mean_sp
+      attr-def: The mean solar radiation during the springtime of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: W m-2
     -
       attr-label: sw_std_sp
+      attr-def: The standard deviation of solar radiation during the springtime of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: W m-2
     -
       attr-label: lw_mean_sp
+      attr-def: The mean longwave radiation during the springtime of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: W m-2
     -
       attr-label: lw_std_sp
+      attr-def: The standard deviation of longwave radiation during the springtime of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: W m-2
     -
       attr-label: at_mean_sp
+      attr-def: The mean air temperature during the springtime of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: degrees C
     -
       attr-label: at_std_sp
+      attr-def: The standard deviation of air temperature during the springtime of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: degrees C
     -
       attr-label: rh_mean_sp
+      attr-def: The mean relative humidity during the springtime of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: %
     -
       attr-label: rh_std_sp
+      attr-def: The standard deviation of relative humidity during the springtime of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: %
     -
       attr-label: ws_mean_sp
     -

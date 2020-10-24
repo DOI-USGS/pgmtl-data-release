@@ -3,6 +3,28 @@ split_pb_filenames <- function(files_df){
   extract(files_df, file, c('prefix','site_id','suffix'), "(pb0|pball)_(.*)_(temperatures.feather)", remove = FALSE)
 }
 
+
+create_mtl_rmse_table <- function(filepath, pb_mtl_fl, pg_mtl_fl){
+  
+  pb_mtl <- read_csv(pb_mtl_fl) %>% 
+    rename(actual_pb_mtl_rmse = `pb-mtl_rmse`, pred_pb_mtl_rmse = predicted_rmse) %>% 
+    group_by(target_id) %>% mutate(
+      actual_pb_mtl_rank = rank(actual_pb_mtl_rmse, ties.method = "first"),
+      pred_pb_mtl_rank = rank(pred_pb_mtl_rmse, ties.method = "first")) %>% 
+    select(target_id, source_id, actual_pb_mtl_rmse, pred_pb_mtl_rmse, actual_pb_mtl_rank, pred_pb_mtl_rank) %>% 
+    ungroup()
+  
+  read_csv(pg_mtl_fl) %>% 
+    rename(actual_pgdl_mtl_rmse = `pg-mtl_rmse`, pred_pgdl_mtl_rmse = predicted_rmse) %>% 
+    group_by(target_id) %>% mutate(
+      actual_pgdl_mtl_rank = rank(actual_pgdl_mtl_rmse, ties.method = "first"),
+      pred_pgdl_mtl_rank = rank(pred_pgdl_mtl_rmse, ties.method = "first")) %>% 
+    select(target_id, source_id, actual_pgdl_mtl_rmse, pred_pgdl_mtl_rmse, actual_pgdl_mtl_rank, pred_pgdl_mtl_rank) %>% 
+    arrange(target_id, actual_pgdl_mtl_rank) %>% 
+    ungroup() %>% 
+    inner_join(pb_mtl, by = c('target_id','source_id')) %>% 
+    write_csv(path = filepath)
+}
 extract_id_pbmtl <- function(filepath){
   tibble(source_filename = names(yaml::yaml.load_file(filepath))) %>% rowwise() %>% 
     mutate(site_id = {str_split(basename(source_filename), '_t\\|s_')[[1]][1]}) %>% ungroup() %>%

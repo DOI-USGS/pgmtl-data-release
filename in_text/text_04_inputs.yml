@@ -2,8 +2,8 @@ title: >-
   Predicting Water Temperature Dynamics of Unmonitored Lakes with Meta Transfer Learning: 4 Model inputs (meteorological inputs and ice flags)
 
 abstract: >-
-  This dataset includes model inputs (specifically, weather and flags for predicted ice-cover) and is part of a larger data release of lake 
-  temperature model inputs and outputs for 2,332 lakes in the U.S.
+  This dataset includes model inputs (specifically, meteorological inputs to the predictive models and flags for predicted ice-cover) 
+  and is part of a larger data release of lake temperature model inputs and outputs for 2,332 lakes in the U.S.
   states of North Dakota, South Dakota, Minnesota, Wisconsin, and Michigan (https://doi.org/10.5066/P9PPHJE2).
 cross-cites:
   -
@@ -18,6 +18,12 @@ cross-cites:
       A General Lake Model (GLM 3.0) for linking with high-frequency sensor data from the Global Lake Ecological Observatory Network (GLEON).
     pubdate: 2019
     link: https://doi.org/10.5194/gmd-12-473-2019
+  -
+    authors: ['Luke A. Winslow','Gretchen J.A. Hansen','Jordan S. Read','Michael Notaro']
+    title: >-
+      Large-scale modeled contemporary and future water temperature estimates for 10,774 Midwestern U.S. Lakes
+    pubdate: 2017
+    link: http://dx.doi.org/10.1038/sdata.2017.53
 
 entities:
   -
@@ -33,25 +39,92 @@ entities:
       data-units: NA
   -
     data-name: inputs_{group_id}_N{minN-maxN}_W{minW-maxW}.zip
-    data-description: A zip file containing individual meteorological csv files that were used as inputs to run lake temperature simulations
+    data-description: >-
+      A zip file containing individual meteorological csv files that were used as inputs to run lake temperature simulations. See
+      lake metadata file to match csv file names to the associated lake site_id (some meteorological files apply to multiple lakes). 
     attributes:
     -
-      attr-label: FILL THIS IN
-      attr-def: NA
+      attr-label: time
+      attr-def: Date of this weather estimate. 
+      attr-defs: This data release
+      data-min: >-
+        1979-01-02
+      data-max: >-
+        2020-01-01
+      data-units: NA
+    -
+      attr-label: ShortWave
+      attr-def: >-
+        Incoming radiant energy with wavelengths between ~300 and ~3000 nm, 
+        emitted by the sun and reaching the lake surface after passing through the atmosphere, as a daily average.
       attr-defs: This data release
       data-min: NA
       data-max: NA
-      data-units: NA
+      data-units: W m-2
+    -
+      attr-label: LongWave
+      attr-def: >-
+        Incoming thermal radiation at wavelengths > 3000 nm directed from the atmosphere to the lake surface, as a daily average.
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: W m-2
+    -
+      attr-label: AirTemp
+      attr-def: Air temperature above the surface of the lake, as a daily average.
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: degrees C
+    -
+      attr-label: RelHum
+      attr-def: Relative humidity of the air above the surface of the lake, as a daily average.
+      attr-defs: This data release
+      data-min: 0
+      data-max: 100
+      data-units: %
+    -
+      attr-label: WindSpeed
+      attr-def: Speed of the wind above the lake, calculated to a daily number using the methods described in Winslow et al. 2017.
+      attr-defs: This data release
+      data-min: 0
+      data-max: 100
+      data-units: %
+    -
+      attr-label: Rain
+      attr-def: Daily rate of rain reaching the lake surface in a day as described in Winslow et al. 2017; rate as determined by Hipsey et al. 2019.
+      attr-defs: This data release
+      data-min: 0
+      data-max: NA
+      data-units: m day−1
+    -
+      attr-label: Snow
+      attr-def: Daily rate of snow reaching the lake surface in a day as described in Winslow et al. 2017.
+      attr-defs: This data release
+      data-min: 0
+      data-max: NA
+      data-units: m day−1
   -
     data-name: ice_flags_{group_id}_N{minN-maxN}_W{minW-maxW}.zip
     data-description: A zip file containing individual lake ice csv files that capture whether the lake was estimated to have ice cover for each day of the simulation
     attributes:
     -
-      attr-label: FILL THIS IN
-      attr-def: NA
+      attr-label: date
+      attr-def: Date of this ice prediction. 
       attr-defs: This data release
-      data-min: NA
-      data-max: NA
+      data-min: >-
+        1980-01-01
+      data-max: >-
+        2019-12-31
+      data-units: NA
+    -
+      attr-label: ice
+      attr-def: A boolean for whether this lake was predicted to have ice cover on a given day. These estimates come from the PB0 model outputs
+      attr-defs: This data release
+      data-min: >-
+        FALSE
+      data-max: >-
+        TRUE
       data-units: NA
 
 build-environment: Multiple computer systems were used to generate these data, including linux, OSX. The open source language R was used on all systems, as well as the open-source model GLM.
