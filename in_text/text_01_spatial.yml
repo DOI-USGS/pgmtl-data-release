@@ -21,7 +21,7 @@ cross-cites:
     title: >-
       Data release: A large-scale database of modeled contemporary and future water temperature data for 10,774 Michigan, Minnesota and Wisconsin Lakes
     pubdate: 2016
-    form: publication
+    form: data release
     link: http://dx.doi.org/10.5066/F7DV1H10
   -
     authors: ['John T.O. Kirk']
@@ -37,6 +37,12 @@ cross-cites:
     pubdate: 1980
     form: publication
     link: http://images.library.wisc.edu/WI/EFacs/transactions/WT1980/reference/wi.wt1980.rclathrop.pdf
+  -
+    authors: ['Clement Kent', 'Jonathan Wong']
+    title: An Index of Littoral Zone Complexity and Its Measurement
+    pubdate: 1982
+    form: publication
+    link: https://doi.org/10.1139/f82-115
 
 entities:
   -
@@ -200,14 +206,14 @@ entities:
       attr-defs: This data release
       data-min: NA
       data-max: NA
-      data-units: %
+      data-units: percentage
     -
       attr-label: rh_std
       attr-def: The standard deviation of relative humidity during the entire modeling period
       attr-defs: This data release
       data-min: NA
       data-max: NA
-      data-units: %
+      data-units: percentage
     -
       attr-label: ws_mean
       attr-def: The mean of wind speed during the entire modeling period
@@ -298,121 +304,409 @@ entities:
       attr-defs: This data release
       data-min: NA
       data-max: NA
-      data-units: %
+      data-units: percentage
     -
       attr-label: rh_std_sp
       attr-def: The standard deviation of relative humidity during the springtime of the entire modeling period
       attr-defs: This data release
       data-min: NA
       data-max: NA
-      data-units: %
+      data-units: percentage
     -
       attr-label: ws_mean_sp
+      attr-def: The mean wind speed during the springtime of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: m -s
     -
       attr-label: ws_std_sp
+      attr-def: The standard deviation of wind speed during the springtime of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: m -s
     -
       attr-label: rain_mean_sp
+      attr-def: The mean rainfall rate during the springtime of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: m day−1
     -
       attr-label: rain_std_sp
+      attr-def: The standard deviation of rainfall rate during the springtime of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: m day−1
     -
       attr-label: snow_mean_sp
+      attr-def: The mean snowfall rate during the springtime of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: m day−1
     -
       attr-label: snow_std_sp
+      attr-def: The standard deviation of snowfall rate during the springtime of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: m day−1
     -
       attr-label: sw_mean_au
+      attr-def: The mean solar radiation during the autum of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: W m-2
     -
       attr-label: sw_std_au
+      attr-def: The standard deviation of solar radiation during the autum of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: W m-2
     -
       attr-label: lw_mean_au
+      attr-def: The mean longwave radiation during the autum of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: W m-2
     -
       attr-label: lw_std_au
+      attr-def: The standard deviation of longwave radiation during the autum of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: W m-2
     -
       attr-label: at_mean_au
+      attr-def: The mean air temperature during the autum of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: degrees C
     -
       attr-label: at_std_au
+      attr-def: The standard deviation of air temperature during the autum of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: degrees C
     -
       attr-label: rh_mean_au
+      attr-def: The mean relative humidity during the autum of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: percentage
     -
       attr-label: rh_std_au
+      attr-def: The standard deviation of relative humidity during the autum of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: percentage
     -
       attr-label: ws_mean_au
+      attr-def: The mean wind speed during the autum of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: m -s
     -
       attr-label: ws_std_au
+      attr-def: The standard deviation of wind speed during the autum of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: m -s
     -
       attr-label: rain_mean_au
+      attr-def: The mean rainfall rate during the autum of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: m day−1
     -
       attr-label: rain_std_au
+      attr-def: The standard deviation of the rainfall rate during the autum of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: m day−1
     -
       attr-label: snow_mean_au
+      attr-def: The mean snowfall rate during the autum of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: m day−1
     -
       attr-label: snow_std_au
+      attr-def: The standard deviation of the snowfall rate during the autum of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: m day−1
     -
       attr-label: sw_mean_wi
+      attr-def: The mean solar radiation during the winter of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: W m-2
     -
       attr-label: sw_std_wi
+      attr-def: The standard deviation of solar radiation during the winter of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: W m-2
     -
       attr-label: lw_mean_wi
+      attr-def: The mean longwave radiation during the winter of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: W m-2
     -
       attr-label: lw_std_wi
+      attr-def: The standard deviation of longwave radiation during the winter of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: W m-2
     -
       attr-label: at_mean_wi
+      attr-def: The mean air temperature during the winter of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: degress C
     -
       attr-label: at_std_wi
+      attr-def: The standard deviation of air temperature during the winter of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: degress C
     -
       attr-label: rh_mean_wi
+      attr-def: The mean relative humidity during the winter of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: percentage
     -
       attr-label: rh_std_wi
+      attr-def: The standard deviation of relative humidity during the winter of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: percentage
     -
       attr-label: ws_mean_wi
+      attr-def: The mean wind speed during the winter of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: m -s
     -
       attr-label: ws_std_wi
+      attr-def: The standard deviation of wind speed during the winter of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: m -s
     -
       attr-label: rain_mean_wi
+      attr-def: The mean rainfall rate during the winter of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: m day−1
     -
       attr-label: rain_std_wi
+      attr-def: The standard deviation of the rainfall rate during the winter of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: m day−1
     -
       attr-label: snow_mean_wi
+      attr-def: The mean snowfall rate during the winter of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: m day−1
     -
       attr-label: snow_std_wi
+      attr-def: The standard deviation of the snowfall rate during the winter of the entire modeling period
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: m day−1
     -
       attr-label: n_obs
+      attr-def: >-
+        The number of temperature observations used to categorize source lakes (not used as a metafeature for target lakes, 
+        even while appears in the data release)
+      attr-defs: This data release
+      data-min: 9
+      data-max: 61211
+      data-units: NA
     -
       attr-label: n_prof
+      attr-def: >-
+        The number of dates with a temperature profile (see Willard et al. 2021 for profile calculation rules) used to categorize source 
+        lakes (not used as a metafeature for target lakes, even while appears in the data release)
+      attr-defs: This data release
+      data-min: 5
+      data-max: 5635
+      data-units: NA
     -
       attr-label: n_obs_wi
+      attr-def: >-
+        The number of temperature observations in the winter used to categorize source lakes (not used as a metafeature for target lakes, 
+        even while appears in the data release)
+      attr-defs: This data release
+      data-min: 0
+      data-max: 11523
+      data-units: NA
     -
       attr-label: n_obs_sp
+      attr-def: >-
+        The number of temperature observations in the spring used to categorize source lakes (not used as a metafeature for target lakes, 
+        even while appears in the data release)
+      attr-defs: This data release
+      data-min: 0
+      data-max: 16898
+      data-units: NA
     -
-      attr-label: n_obs_wu
+      attr-label: n_obs_su
+      attr-def: >-
+        The number of temperature observations in the summer used to categorize source lakes (not used as a metafeature for target lakes, 
+        even while appears in the data release)
+      attr-defs: This data release
+      data-min: 3
+      data-max: 30305
+      data-units: NA
     -
       attr-label: n_obs_au
+      attr-def: >-
+        The number of temperature observations in the autum used to categorize source lakes (not used as a metafeature for target lakes, 
+        even while appears in the data release)
+      attr-defs: This data release
+      data-min: 0
+      data-max: 13971
+      data-units: NA
     -
       attr-label: obs_depth_mean_frac
+      attr-def: >-
+        The mean of depth observations as a fraction of the maximum reported depth for the lake. This number exceeds 1 
+        in the case where the mean depth of observations was greater than the reported maximum depth of the lake, in those cases, the observations
+        below the maximum depth were excluded. This happened in some cases because a deeper basin was considered part of the same lake for 
+        temperature monitoring purposes, but considered a separate lake for reporting maximum depth, or is indicative of errors. A value of 
+        0 for a given lake means all measurements were taken at the surface. This value was not used as a metafeature for target lakes, 
+        even while appears in the data release.
+      attr-defs: This data release
+      data-min: 0
+      data-max: 2.12
+      data-units: NA
     -
       attr-label: obs_temp_mean
+      attr-def: >-
+        The mean temperature of observations. This value was not used as a metafeature for target lakes, 
+        even while appears in the data release.
+      attr-defs: This data release
+      data-min: 3.60
+      data-max: 25.3
+      data-units: degrees C
     -
       attr-label: obs_temp_std
+      attr-def: >-
+        The standard deviation of temperature of observations. This value was not used as a metafeature for target lakes, 
+        even while appears in the data release.
+      attr-defs: This data release
+      data-min: 1.44
+      data-max: 10.2
+      data-units: degrees C
     -
       attr-label: obs_temp_skew
+      attr-def: >-
+        The skew of temperature of observations. This value was not used as a metafeature for target lakes, 
+        even while appears in the data release.
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: NA
     -
       attr-label: obs_temp_kurt
+      attr-def: >-
+        The kurtosis of temperature of observations. This value was not used as a metafeature for target lakes, 
+        even while appears in the data release.
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: NA
     -
       attr-label: zero_temp_doy
+      attr-def: >-
+        The average day of year (DOY) when air temperatures crossed into below zero conditions. DOY is between 1 and 366, with 
+        1 representing January first.
+      attr-defs: This data release
+      data-min: 310
+      data-max: 349
+      data-units: NA
     -
       attr-label: at_amp
+      attr-def: >-
+        The estimated average seasonal amplitute of air temperature. Is a low to high range in degrees C.
+      attr-defs: This data release
+      data-min: 21.0
+      data-max: 12.7
+      data-units: degrees C
+      
     -
       attr-label: lathrop_strat
-      attr-def: An boolean value for the Latrop and Lillie estimate of whether a lake is likely to be stratified
+      attr-def: A boolean value for the Latrop and Lillie estimate of whether a lake is likely to be stratified
       attr-defs: See Lathrop and Lillie 1980
       data-min: 0
       data-max: 1
       data-units: NA
     -
       attr-label: glm_strat_perc
+      attr-def: >-
+        Using the PB0 simulation temperature outputs (uncalibrated General Lake Model), this metric represents the fraction
+        of days where stratification (as specified by any time the difference between top and bottom temperatures exceeded 1 degree C)
+        existed. A glm_strat_perc value of 0 would mean this lake was simulated by PB0 to never be stratified, and a value of 1 
+        would mean this lake was simulated to be stratified constantly. 
+      attr-defs: See Hipsey et al. 2019 for details on GLM. 
+      data-min: 0
+      data-max: 0.949
+      data-units: NA
     -
       attr-label: ws_sp_mix
+      attr-def: Average windspeed during the period of spring mixing (spring unstratified period). 
+      attr-defs: This data release
+      data-min: 3.74
+      data-max: 5.28
+      data-units: m -s
+      
     -
       attr-label: SDF
+      attr-def: >-
+        The shoreline development factor is the ratio of the lake perimeter to the perimeter of a circle with equal area. 
+        The SDF is a metric of shoreline complexity, and a high SDF is indicative of a complex lake shape. When the lake is a 
+        perfect circle, the SDF is 1 (1 is the lowest possible value of SDF). SDF is unitless.
+      attr-defs: Kent and Wong 1982
+      data-min: 1.02
+      data-max: 30.2
+      data-units: NA
       
 
 data-name: Polygons for study lakes; metadata file describing properties of each lake

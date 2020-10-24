@@ -82,14 +82,16 @@ entities:
       attr-defs: This data release
       data-min: 0
       data-max: 100
-      data-units: %
+      data-units: >-
+        %
     -
       attr-label: WindSpeed
       attr-def: Speed of the wind above the lake, calculated to a daily number using the methods described in Winslow et al. 2017.
       attr-defs: This data release
       data-min: 0
       data-max: 100
-      data-units: %
+      data-units: >-
+        %
     -
       attr-label: Rain
       attr-def: Daily rate of rain reaching the lake surface in a day as described in Winslow et al. 2017; rate as determined by Hipsey et al. 2019.
