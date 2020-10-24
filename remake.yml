@@ -51,6 +51,7 @@ targets:
       - 05_predictions_sb_pgmtl9
       - 05_predictions_sb_pgmtl
       - 05_predictions_sb_pbmtl
+      - 05_predictions_sb_rmse
       - 06_evaluation_sb_data
       - 06_evaluation_sb_xml
 
@@ -147,6 +148,9 @@ targets:
   05_predictions_sb_pbmtl:      
     command: sb_replace_files(sbid_05_predictions,
       file_hash = "out/5_pbmtl_predict_zips.yml")
+  05_predictions_sb_rmse:
+    command: sb_replace_files(sbid_05_predictions,
+      'out_data/all_MTL_RMSE_predictions.csv')
       
   06_evaluation_sb_xml:
     command: sb_render_post_xml(sb_id_06_evaluation,

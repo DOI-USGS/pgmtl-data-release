@@ -31,6 +31,7 @@ targets:
       - out/5_pgmtl_predict_zips.yml
       - out/5_pgmtl9_predict_zips.yml
       - out/5_pbmtl_predict_zips.yml
+      - out_data/all_MTL_RMSE_predictions.csv
 
 # pb0 predictions are here: 3_run/sync/pb0_{site_id}_temperatures.feather
 # pball predictions are here: 3_run/sync/pball_{site_id}_temperatures.feather
@@ -110,3 +111,8 @@ targets:
       spatial_groups, site_ids_grouped,
       county_bounds = us_counties_sf,
       lakes_sf_fl = "../lake-temperature-model-prep/1_crosswalk_fetch/out/canonical_lakes_sf.rds")
+      
+  out_data/all_MTL_RMSE_predictions.csv:
+    command: create_mtl_rmse_table(target_name,
+      pb_mtl_fl = 'in_data/PB-MTL_all_sources_with_predictions - Sheet2.csv',
+      pg_mtl_fl = 'in_data/PG-MTL_result_matrix_test_lakes_all_sources - PG-MTL_result_matrix_test_lakes_all_source.csv')
