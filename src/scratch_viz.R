@@ -1,8 +1,10 @@
 library(tidyverse)
 library(ggplot2)
 
-lake_metadata <- read_csv('~/Downloads/lake_metadata (5).csv')
+lake_metadata <- read_csv('~/Downloads/lake_metadata (5).csv') %>% 
+  mutate(log_surface_area = log(surface_area), log_n_obs = log(n_obs))
 mtl_rmses <- read_csv('out_data/all_MTL_RMSE_predictions.csv')
+
 
 # Rank PGDL-MTL sources according to how many times they were predicted to be used in a top 9
 top_rnk_n <- 9 # cut-off for being considered a "top source"
@@ -39,36 +41,54 @@ top9_counts <- mtl_rmses %>% group_by(source_id) %>%
 # Lathrop Stratification Difference: lathrop_strat (but is binary)
 
 # ylim needs to be the gaps plus the max dot stacks for each one...
-png('~/Downloads/fancy_jared_plot.png', width = 9, height = 5.5, units = 'in', res = 230)
-par(omi = c(0,0,0,0), mai = c(0,0,0,0))
-plot(0, NA, xpd = TRUE, axes = FALSE, ylab = "", xlab = "", xlim = c(1,n_dot_bins*2.3), ylim = c(8,55)) 
+png('~/Downloads/fancy_jared_plot.png', width = 9, height = 2.5, units = 'in', res = 230)
+par(omi = c(0,0,0,0), mai = c(0,2,0,0))
 
-offset_mult <- 12
-x_cnt <- 0
-cex_dot <- 1.4
-cex_med <- 0.9
+layout(matrix(1:6, 3,byrow = F))
+
 titles <- c('pg_group' = 'PGDL-MTL','pb_group' = 'PB-MTL')
-for (model_group in c('pg_group','pb_group')){
-  y_cnt <- 1
+rank_names <- c('pg_group' = 'pred_pb_mtl_rank', 'pb_group' = 'pred_pgdl_mtl_rank')
+for (model_group in c('pg_group', 'pb_group')){
+  
   for (plot_var_name in rev(c('max_depth','log_surface_area', 'log_n_obs'))){
     message(plot_var_name)
     
     df <- lake_metadata %>% 
-      mutate(log_surface_area = log(surface_area), log_n_obs = log(n_obs)) %>% 
-      inner_join(top9_counts) %>% filter(.data[[model_group]] %in% c('bottom','top')) %>% 
-      mutate(bin = cut(.data[[plot_var_name]], breaks = n_dot_bins, labels = F, right = F)) %>% 
-      rename(plot_variable = .data[[plot_var_name]], model_group = .data[[model_group]]) %>% 
-      select(bin, plot_variable, model_group, pg_rank) %>% group_by(bin, model_group) %>% 
-      arrange(plot_variable) %>% mutate(rank = rank(plot_variable, ties.method = 'first')) %>% 
-      mutate(rank = ifelse(model_group == 'bottom', 1-rank, rank), col = ifelse(model_group == 'bottom', "#F8766D", "#00BFC4"))
+      inner_join(top9_counts, by = 'site_id') %>% filter(.data[[model_group]] %in% c('bottom','top')) %>% 
+      group_by(.data[[model_group]]) %>% 
+      summarize(med = median(.data[[plot_var_name]]), 
+                low = quantile(.data[[plot_var_name]], probs = 0.25),
+                high = quantile(.data[[plot_var_name]], probs = 0.75), 
+                max = min(c(high+(high-low)*1.5), max(.data[[plot_var_name]])), 
+                min = min(c(low-(high-low)*1.5), min(.data[[plot_var_name]])), 
+                .groups = 'drop') 
+    
+    source_ids <- group_by(mtl_rmses, source_id) %>% 
+      summarize(top_src = sum(.data[[rank_names[[model_group]]]] == 1)) %>% filter(top_src > 9) %>% 
+      pull(source_id)
+    
+    top_pts <- lake_metadata %>% filter(site_id %in% source_ids) %>% 
+      pull(.data[[plot_var_name]])
+    bottom <- df %>% filter(.data[[model_group]] == 'bottom')
+    top <- df %>% filter(.data[[model_group]] == 'top')
+    
+    plot(0, NA, xpd = TRUE, axes = FALSE, ylab = "", xlab = "", xlim = c(min(df$min), max(df$max)), ylim = c(-1,1))
     
     
-    points(df$bin+x_cnt, df$rank+(y_cnt * offset_mult - 0.5), col = df$col, pch = 16, cex = cex_dot)
+    y_mid_bot <- - 0.3
+    lines(c(bottom$max, bottom$min), c(y_mid_bot, y_mid_bot))
+    polygon(c(bottom$low, bottom$low, bottom$high, bottom$-high), c(y_mid_bot-0.2, y_mid_bot+0.2, y_mid_bot+0.2, y_mid_bot-0.2), 
+            col = 'white', border = NA)
+    polygon(c(bottom$low, bottom$low, bottom$high, bottom$high), c(y_mid_bot-0.2, y_mid_bot+0.2, y_mid_bot+0.2, y_mid_bot-0.2), 
+            col = 'grey40', density = 20, border = 'black')
+    lines(c(bottom$med, bottom$med), c(y_mid_bot+0.3, y_mid_bot-0.3), lwd = 2)
     
-    medians <- df %>% group_by(model_group) %>% summarize(plot_variable = median(plot_variable)) %>% 
-      left_join(df) %>% group_by(model_group) %>% filter(row_number() == 1)
-    
-    points(medians$bin+x_cnt, medians$rank+(y_cnt * offset_mult - 0.5), col = 'black', pch = 18, cex = cex_med)
+    y_mid_top <- 0.3
+    lines(c(top$max, top$min), c(y_mid_top, y_mid_top))
+    polygon(c(top$low, top$low, top$high, top$high), c(y_mid_top-0.2, y_mid_top+0.2, y_mid_top+0.2, y_mid_top-0.2), 
+            col = 'white')
+    lines(c(top$med, top$med), c(y_mid_top+0.3, y_mid_top-0.3), lwd = 2)
+    points(top_pts, y = rep(y_mid_top, length(top_pts)), col = '#ca0020', pch = 16, cex = 1.1)
     
     text(n_dot_bins/2+x_cnt, y_cnt * offset_mult-offset_mult/2 + 1.25, plot_var_name)
     y_cnt <- y_cnt + 1
@@ -77,3 +97,25 @@ for (model_group in c('pg_group','pb_group')){
   x_cnt <- x_cnt + n_dot_bins+5
 }
 dev.off()
+
+
+
+mtls <- read_csv('out_data/all_MTL_RMSE_predictions.csv') 
+type = 'pb'
+
+common_src <- group_by(mtls, source_id) %>% 
+  summarize(top_src = sum(.data[[sprintf("pred_%s_mtl_rank", type)]] == 1)) %>% filter(top_src > 9) %>% 
+  pull(source_id)
+
+uncom_src <- group_by(mtls, source_id) %>% 
+  summarize(top_src = sum(.data[[sprintf("pred_%s_mtl_rank", type)]] == 1)) %>% filter(top_src %in% 1:3) %>% 
+  pull(source_id)
+
+message('common sources: ', type)
+filter(mtls, .data[[sprintf("pred_%s_mtl_rank", type)]] == 1, source_id %in% common_src) %>% 
+  pull(.data[[sprintf("actual_%s_mtl_rank", type)]]) %>% median
+
+message('uncommon sources:')
+filter(mtls, .data[[sprintf("pred_%s_mtl_rank", type)]] == 1, source_id %in% uncom_src) %>% 
+  pull(.data[[sprintf("actual_%s_mtl_rank", type)]]) %>% median
+
