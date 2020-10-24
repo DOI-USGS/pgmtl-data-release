@@ -169,7 +169,8 @@ targets:
       "out_data/pgmtl_matched_to_observations.zip",
       "out_data/pgmtl_evaluation.csv",
       "out_data/pbmtl_matched_to_observations.zip",
-      "out_data/pbmtl_evaluation.csv")
+      "out_data/pbmtl_evaluation.csv",
+      "out_data/sparse_PGDL_vs_PGDL-MTL_rmse.csv")
 
   # ------ SB IDs --------
 
