@@ -121,7 +121,128 @@ entities:
       attr-defs: This data release
       data-min: 1
       data-max: 145
-      data-units: integer      
+      data-units: integer
+  -
+    data-name: predict_lakes.png
+    data-description: An image of the lakes that have temperature predictions
+    attributes:
+    -
+      attr-label: PNG image
+      attr-def: NA
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: NA
+  -
+    data-name: pbmtl_predictions_{group_id}_N{minN-maxN}_W{minW-maxW}.zip
+    data-description: >-
+      A zip file a csv file for every lake within {group_id} with predictions from the PB-MTL (process-based meta transfer learning) 
+      model predictions. Files within the zip are named "pbmtl_{site_id}_temperatures.csv".
+    attributes:
+    -
+      attr-label: date
+      attr-def: Date of the temperature predictions. 
+      attr-defs: This data release
+      data-min: >-
+        1980-01-01
+      data-max: >-
+        2019-12-31
+      data-units: NA
+    -
+      attr-label: temp_{z}
+      attr-def: Predicted water temperature at depth z (depth z in meters below the lake surface)
+      attr-defs: Willard et al. 2021
+      data-min: NA
+      data-max: NA
+      data-units: degrees C
+  -
+    data-name: pball_predictions_{group_id}_N{minN-maxN}_W{minW-maxW}.zip
+    data-description: >-
+      A zip file a csv file for every lake within {group_id} with predictions from the PB model calibrated to all available temperature data.
+      Files within the zip are named "pball_{site_id}_temperatures.csv".
+    attributes:
+    -
+      attr-label: date
+      attr-def: Date of the temperature predictions. 
+      attr-defs: This data release
+      data-min: >-
+        1980-01-01
+      data-max: >-
+        2019-12-31
+      data-units: NA
+    -
+      attr-label: temp_{z}
+      attr-def: Predicted water temperature at depth z (depth z in meters below the lake surface)
+      attr-defs: Willard et al. 2021
+      data-min: NA
+      data-max: NA
+      data-units: degrees C
+  -
+    data-name: pb0_predictions_{group_id}_N{minN-maxN}_W{minW-maxW}.zip
+    data-description: >-
+      A zip file a csv file for every lake within {group_id} with predictions from the PB0 model (uncalibrated process-based model).
+      Files within the zip are named "pb0_{site_id}_temperatures.csv".
+    attributes:
+    -
+      attr-label: date
+      attr-def: Date of the temperature predictions. 
+      attr-defs: This data release
+      data-min: >-
+        1980-01-01
+      data-max: >-
+        2019-12-31
+      data-units: NA
+    -
+      attr-label: temp_{z}
+      attr-def: Predicted water temperature at depth z (depth z in meters below the lake surface)
+      attr-defs: Willard et al. 2021
+      data-min: NA
+      data-max: NA
+      data-units: degrees C
+  -
+    data-name: pgmtl_predictions_{group_id}_N{minN-maxN}_W{minW-maxW}.zip
+    data-description: >-
+      A zip file a csv file for every lake within {group_id} with predictions from the PGDL-MTL model (process-guided deep learning meta transfer learning) .
+      Files within the zip are named "pgmtl_{site_id}_temperatures.csv".
+    attributes:
+    -
+      attr-label: date
+      attr-def: Date of the temperature predictions. 
+      attr-defs: This data release
+      data-min: >-
+        1980-01-01
+      data-max: >-
+        2019-12-31
+      data-units: NA
+    -
+      attr-label: temp_{z}
+      attr-def: Predicted water temperature at depth z (depth z in meters below the lake surface)
+      attr-defs: Willard et al. 2021
+      data-min: NA
+      data-max: NA
+      data-units: degrees C
+  -
+    data-name: pgmtl9_predictions_{group_id}_N{minN-maxN}_W{minW-maxW}.zip
+    data-description: >-
+      A zip file a csv file for every lake within {group_id} with predictions from the PGDL-MTL9 model 
+      (process-guided deep learning meta transfer learning top 9 sources ensembled). Files within the zip are named "pgmtl9_{site_id}_temperatures.csv".
+    attributes:
+    -
+      attr-label: date
+      attr-def: Date of the temperature predictions. 
+      attr-defs: This data release
+      data-min: >-
+        1980-01-01
+      data-max: >-
+        2019-12-31
+      data-units: NA
+    -
+      attr-label: temp_{z}
+      attr-def: Predicted water temperature at depth z (depth z in meters below the lake surface)
+      attr-defs: Willard et al. 2021
+      data-min: NA
+      data-max: NA
+      data-units: degrees C
 build-environment: >-
   For PB and PB0 predictions we used USGS Advanced Research Computing, USGS Yeti Supercomputer (https://doi.org/10.5066/F7D798MJ); process-based predictions were generated with the following open source tools available in the R programming language (R version 3.5.0 (2018-04-23)).\n
   The computing platform for generating data and metadata was x86_64-redhat-linux-gnu. R packages loaded into this environment: dplyr, version: 0.8.1; glmtools, version: 0.15.0; rLakeAnalyzer, version: 1.11.4; GLMr, version: 3.1.14; readr, version: 1.3.1;
