@@ -454,6 +454,32 @@ reshape_sparse_PGDL_csv <- function(outfile, infile){
     write_csv(path = outfile)
 }
 
+reshape_join_mtl_metafeats <- function(outfile, pbmtl_file, pgdlmtl_file, joint_features){
+  pbmtl_feats <- read_csv(pbmtl_file) %>% select(-`pb-mtl_rmse`, -predicted_rmse) %>% 
+    rename(diff_max_depth = dif_max_depth, diff_surface_area = dif_surface_area, 
+           diff_obs_temp_air = obs_temp_mean_airdif,
+           diff_sw_mean_au = dif_sw_mean_au, diff_ws_mean_au = dif_ws_mean_au, 
+           diff_lathrop_strat = dif_lathrop_strat, diff_glm_strat_perc = dif_glm_strat_perc,
+           abs_diff_glm_strat_perc = ad_glm_strat_perc, perc_diff_max_depth = perc_dif_max_depth,
+           perc_diff_surface_area = perc_dif_surface_area)
+  
+  
+  read_csv(pgdlmtl_file) %>% select(-`pg-mtl_rmse`, -predicted_rmse) %>% 
+    rename(n_obs = source_observations, obs_temp_mean = mean_source_observation_temp, 
+           diff_rh_mean_au = diff_RH_mean_autumn, diff_glm_strat_perc = dif_glm_strat_perc, 
+           perc_diff_max_depth = percent_diff_max_depth, perc_diff_surface_area = percent_diff_surface_area,
+           perc_diff_sqrt_surface_area = perc_dif_sqrt_surface_area) %>% 
+    # removed the redundant features:
+    select(-one_of(joint_features)) %>% 
+    left_join(pbmtl_feats, by = c('target_id','source_id')) %>%
+    select(target_id, source_id, diff_max_depth, perc_diff_max_depth, diff_glm_strat_perc, 
+           diff_surface_area, perc_diff_surface_area, obs_temp_mean, n_obs, perc_diff_sqrt_surface_area, 
+           diff_lathrop_strat, diff_rh_mean_au, diff_obs_temp_air, diff_ws_mean_au, 
+           abs_diff_glm_strat_perc, obs_temp_kurt, diff_sw_mean_au, obs_temp_skew) %>% 
+    write_csv(path = outfile)
+  
+}
+
 zip_this <- function(outfile, .object){
 
   if ('data.frame' %in% class(.object)){

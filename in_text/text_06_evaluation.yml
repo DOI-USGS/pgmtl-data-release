@@ -1,2 +1,91 @@
 title: >-
   Predicting Water Temperature Dynamics of Unmonitored Lakes with Meta Transfer Learning: 6 model evaluation
+
+
+entities:
+  -
+    data-name: all_MTL_RMSE_predictions.csv
+    data-description: MTL predictions for all 145 source lakes and 305 target lakes for PB and PGDL transfers
+    attributes:
+    -
+      attr-label: target_id
+      attr-def: >-
+        Lake identification number for this dataset. Is the Prmnn_I prefixed with source, as "nhd_{Prmnn_I}". The "target" lake being predicted
+      attr-defs: >-
+        http://nhd.usgs.gov/
+      data-min: NA
+      data-max: NA
+      data-units: NA
+    -
+      attr-label: source_id
+      attr-def: >-
+        Lake identification number for this dataset. Is the Prmnn_I prefixed with source, as "nhd_{Prmnn_I}". The "source" lake being transfered to predict temperatures of the target lake
+      attr-defs: >-
+        http://nhd.usgs.gov/
+      data-min: NA
+      data-max: NA
+      data-units: NA
+    -
+      attr-label: actual_pgdl_mtl_rmse
+      attr-def: >-
+        Root-mean square error (in degrees C) of the process-guided deep learning transfered model predictions. 
+      attr-defs: >-
+        https://en.wikipedia.org/wiki/Root-mean-square_deviation
+      data-min: 0.907
+      data-max: 20.149
+      data-units: degrees C
+    -
+      attr-label: pred_pgdl_mtl_rmse
+      attr-def: >-
+        Predicted root-mean square error (in degrees C) of the process-guided deep learning transfered model predictions. 
+      attr-defs: >-
+        https://en.wikipedia.org/wiki/Root-mean-square_deviation
+      data-min: 0.205
+      data-max: 15.141
+      data-units: degrees C
+    -
+      attr-label: actual_pgdl_mtl_rank
+      attr-def: Rank of performance (performance as estimated as RMSE in degrees C) of transfered process-guided deep learning source model in predicting target lake water temperatures.
+      attr-defs: This data release
+      data-min: 1
+      data-max: 145
+      data-units: integer
+    -
+      attr-label: pred_pgdl_mtl_rank
+      attr-def: Predicted rank of performance (performance as estimated as RMSE in degrees C) of transfered process-guided deep learning source model in predicting target lake water temperatures.
+      attr-defs: This data release
+      data-min: 1
+      data-max: 145
+      data-units: integer
+    -
+      attr-label: actual_pb_mtl_rmse
+      attr-def: >-
+        Root-mean square error (in degrees C) of the process-based transfered model predictions. 
+      attr-defs: >-
+        https://en.wikipedia.org/wiki/Root-mean-square_deviation
+      data-min: 0.907
+      data-max: 20.149
+      data-units: degrees C
+    -
+      attr-label: pred_pb_mtl_rmse
+      attr-def: >-
+        Predicted root-mean square error (in degrees C) of the process-based transfered model predictions. 
+      attr-defs: >-
+        https://en.wikipedia.org/wiki/Root-mean-square_deviation
+      data-min: 0.205
+      data-max: 15.141
+      data-units: degrees C
+    -
+      attr-label: actual_pb_mtl_rank
+      attr-def: Rank of performance (performance as estimated as RMSE in degrees C) of transfered process-based source model in predicting target lake water temperatures.
+      attr-defs: This data release
+      data-min: 1
+      data-max: 145
+      data-units: integer
+    -
+      attr-label: pred_pb_mtl_rank
+      attr-def: Predicted rank of performance (performance as estimated as RMSE in degrees C) of transfered process-based source model in predicting target lake water temperatures.
+      attr-defs: This data release
+      data-min: 1
+      data-max: 145
+      data-units: integer
