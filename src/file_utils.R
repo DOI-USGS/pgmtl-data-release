@@ -444,6 +444,16 @@ zip_pb_export_groups <- function(outfile, file_info_df, site_groups,
 
 }
 
+reshape_sparse_PGDL_csv <- function(outfile, infile){
+  # get rid of the unnamed index/row column
+  read_csv(infile) %>% select(-X1) %>% 
+    mutate(site_id = paste0('nhdhr_', site_id)) %>% 
+    pivot_longer(cols = ends_with(' obs median'), names_to = 'n_prof_name', values_to = "median_rmse") %>% 
+    mutate(n_prof = as.numeric(str_remove(n_prof_name, ' obs median'))) %>% 
+    select(site_id, n_prof, median_rmse) %>% 
+    write_csv(path = outfile)
+}
+
 zip_this <- function(outfile, .object){
 
   if ('data.frame' %in% class(.object)){
