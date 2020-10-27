@@ -656,8 +656,9 @@ entities:
     -
       attr-label: zero_temp_doy
       attr-def: >-
-        The average day of year (DOY) when air temperatures crossed into below zero conditions. DOY is between 1 and 366, with 
-        1 representing January first.
+        Across all years of driver data (1980-2019), the average air temperature for each day of year (DOY) is calculated. 
+        DOY is between 1 and 366, with 1 representing January first. The zero_temp_doy is the first DOY when five days in 
+        a row of subzero temperatures exist for the DOY averages. 
       attr-defs: This data release
       data-min: 310
       data-max: 349
@@ -691,12 +692,12 @@ entities:
       data-units: NA
     -
       attr-label: ws_sp_mix
-      attr-def: Average windspeed during the period of spring mixing (spring unstratified period). 
+      attr-def:  >-
+        The average windspeed for the 45 days following zero_temp_doy, given a sequence of average windspeeds per day of year.
       attr-defs: This data release
       data-min: 3.74
       data-max: 5.28
       data-units: m -s
-      
     -
       attr-label: SDF
       attr-def: >-
