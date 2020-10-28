@@ -1,7 +1,7 @@
 library(tidyverse)
 library(ggplot2)
 
-lake_metadata <- read_csv('~/Downloads/lake_metadata (5).csv') %>% 
+lake_metadata <- read_csv('out_data/lake_metadata.csv') %>% 
   mutate(log_surface_area = log(surface_area), log_n_obs = log(n_obs))
 mtl_rmses <- read_csv('out_data/all_MTL_RMSE_predictions.csv')
 
@@ -46,16 +46,16 @@ get_boxplot_stats <- function(data, boxplot_stat = c('min','max','lower','upper'
 }
 
 # ylim needs to be the gaps plus the max dot stacks for each one...
-png('~/Downloads/fancy_jared_plot.png', width = 9, height = 2.5, units = 'in', res = 230)
-par(omi = c(0,0,0,0), mai = c(0.3,2,0,0), mgp = c(3,0.2,0), xpd = TRUE)
+png('~/Downloads/fancy_jared_plot.png', width = 9, height = 5.5, units = 'in', res = 230)
+par(omi = c(0.01,0.01,0.01,0.01), mai = c(0.3, 1.4, 0, 0), mgp = c(3,0.2,0), xpd = TRUE)
 
-layout(matrix(1:6, 3,byrow = F))
+layout(matrix(c(7,7,7,7, 1:3, 8,8,8,8, 4:6), ncol = 2,byrow = F))
 
 titles <- c('pg_group' = 'PGDL-MTL','pb_group' = 'PB-MTL')
 rank_names <- c('pg_group' = 'pred_pb_mtl_rank', 'pb_group' = 'pred_pgdl_mtl_rank')
 
 plot_details <- list(log_n_obs = 
-                       list(xlim = c(log(100), log(20000)),
+                       list(xlim = c(log(100), log(27000)),
                             at = c(log(100), log(1000), log(10000), 1000),
                             labels = c('100','1,000','10,000', ''),
                             title = c('Number of','observations (#)')),
@@ -73,7 +73,7 @@ plot_details <- list(log_n_obs =
 
 x_cnt = 0
 y_cnt = 0
-for (model_group in c('pg_group', 'pb_group')){
+for (model_group in c('pb_group', 'pg_group')){
   
   for (plot_var_name in rev(c('max_depth','log_surface_area', 'log_n_obs'))){
     message(plot_var_name)
@@ -139,26 +139,118 @@ for (model_group in c('pg_group', 'pb_group')){
     
   }
 }
-dev.off()
 
 
+# 
+# mtls <- read_csv('out_data/all_MTL_RMSE_predictions.csv') 
+# type = 'pb'
+# 
+# common_src <- group_by(mtls, source_id) %>% 
+#   summarize(top_src = sum(.data[[sprintf("pred_%s_mtl_rank", type)]] == 1)) %>% filter(top_src > 9) %>% 
+#   pull(source_id)
+# 
+# uncom_src <- group_by(mtls, source_id) %>% 
+#   summarize(top_src = sum(.data[[sprintf("pred_%s_mtl_rank", type)]] == 1)) %>% filter(top_src %in% 1:3) %>% 
+#   pull(source_id)
+# 
+# message('common sources: ', type)
+# filter(mtls, .data[[sprintf("pred_%s_mtl_rank", type)]] == 1, source_id %in% common_src) %>% 
+#   pull(.data[[sprintf("actual_%s_mtl_rank", type)]]) %>% median
+# 
+# message('uncommon sources:')
+# filter(mtls, .data[[sprintf("pred_%s_mtl_rank", type)]] == 1, source_id %in% uncom_src) %>% 
+#   pull(.data[[sprintf("actual_%s_mtl_rank", type)]]) %>% median
+
+
+us_counties_sf <- remake::fetch('us_counties_sf')
+plot_crs <- "+init=epsg:2811"
+all_lakes <- readRDS("../lake-temperature-model-prep/1_crosswalk_fetch/out/canonical_lakes_sf.rds") %>% 
+  st_transform(crs = plot_crs)
 
 mtls <- read_csv('out_data/all_MTL_RMSE_predictions.csv') 
-type = 'pb'
 
-common_src <- group_by(mtls, source_id) %>% 
-  summarize(top_src = sum(.data[[sprintf("pred_%s_mtl_rank", type)]] == 1)) %>% filter(top_src > 9) %>% 
-  pull(source_id)
 
-uncom_src <- group_by(mtls, source_id) %>% 
-  summarize(top_src = sum(.data[[sprintf("pred_%s_mtl_rank", type)]] == 1)) %>% filter(top_src %in% 1:3) %>% 
-  pull(source_id)
+plot_mtl_tops <- function(type){
+  source_ids <- group_by(mtls, source_id) %>% 
+    summarize(top_src = sum(.data[[sprintf("pred_%s_mtl_rank", type)]] == 1)) %>% filter(top_src > 9) %>% 
+    pull(source_id)
+  mtl_rmses <- filter(mtls, source_id %in% source_ids) %>% 
+    filter(.data[[sprintf("pred_%s_mtl_rank", type)]] == 1)
+  
+  src_pgdl <- group_by(mtls, source_id) %>% 
+    summarize(top_src = sum(pred_pgdl_mtl_rank == 1)) %>% filter(top_src > 9) %>% 
+    pull(source_id)
+  
+  src_pb <- group_by(mtls, source_id) %>% 
+    summarize(top_src = sum(pred_pb_mtl_rank == 1)) %>% filter(top_src > 9) %>% 
+    pull(source_id)
+  
+  all_poss_src_ids <- c(src_pgdl, src_pgdl) %>% unique()
+  
+  tgt_pgdl <- filter(mtls, source_id %in% src_pgdl) %>% 
+    filter(pred_pgdl_mtl_rank == 1) %>% pull(target_id) %>% unique()
+  tgt_pb <- filter(mtls, source_id %in% src_pb) %>% 
+    filter(pred_pb_mtl_rank == 1) %>% pull(target_id) %>% unique()
+  
+  all_poss_tgt_ids <- c(tgt_pgdl, tgt_pb) %>% unique()
+  
+  
+  target_test_ids <- mtl_rmses %>% pull(target_id) %>% unique()
+  
+  
+  # simplify lakes to speed up the plot
+  all_lakes_simple <- sf::st_simplify(all_lakes, dTolerance = 40) %>% mutate(area = st_area(Shape) %>% as.numeric)
+  
+  conus_states <- group_by(us_counties_sf, state) %>% summarise() %>% st_geometry() %>% st_transform(crs = plot_crs)
+  plot_states <- group_by(us_counties_sf, state) %>% summarise() %>% filter(state %in% c('MN','WI','MI')) %>% 
+    st_geometry() %>% st_transform(crs = plot_crs)
+  
+  source_col <- '#ca0020'
+  test_t_col <- '#0571b0'
+  
+  par(mai = c(0,0,0,0), xaxs = 'i', yaxs = 'i')
+  
+  
+  # set the viewbox:
+  all_modeled_lakes <- filter(all_lakes_simple, site_id %in% c(source_ids, target_test_ids))
+  source_lakes <- filter(all_lakes_simple, site_id %in% source_ids)
+  target_test_lakes <- filter(all_lakes_simple, site_id %in% target_test_ids)
+  
+  plot(all_lakes_simple %>% filter(site_id %in% c(all_poss_tgt_ids, all_poss_src_ids)) %>% st_geometry() %>% st_centroid(), 
+       col = NA, reset = FALSE, expandBB = c(0, 0.03, 0, 0.05))
+  
+  plot(conus_states, col = NA, border = 'grey50', lwd = 1.5, add = TRUE)
 
-message('common sources: ', type)
-filter(mtls, .data[[sprintf("pred_%s_mtl_rank", type)]] == 1, source_id %in% common_src) %>% 
-  pull(.data[[sprintf("actual_%s_mtl_rank", type)]]) %>% median
+  plot_modeled_lakes <- function(lakes_sf, col){
+    plot(st_centroid(st_geometry(lakes_sf)), col = col, lwd = 0.5, add = TRUE, cex = 1, pch = 16)
+  }
 
-message('uncommon sources:')
-filter(mtls, .data[[sprintf("pred_%s_mtl_rank", type)]] == 1, source_id %in% uncom_src) %>% 
-  pull(.data[[sprintf("actual_%s_mtl_rank", type)]]) %>% median
 
+
+  for (j in 1:nrow(mtl_rmses)){
+    this_pair <- mtl_rmses[j,]
+    source_coords <- filter(all_lakes_simple, site_id == this_pair$source_id) %>% st_transform('wgs84') %>%
+      st_centroid() %>% st_coordinates()
+
+    target_coords <- filter(all_lakes_simple, site_id == this_pair$target_id) %>% st_transform('wgs84') %>%
+      st_centroid() %>% st_coordinates()
+
+
+    lat_lon_line <- geosphere::gcIntermediate(source_coords, target_coords, n = 100, addStartEnd = TRUE) %>%
+      as.matrix() %>% st_linestring(dim = "XYZ") %>%
+      st_sfc(crs = 'wgs84') %>%
+      st_transform(crs = 2811) %>%
+      plot(add = TRUE, col = '#00000033', lwd = 0.75)
+
+  }
+  plot_modeled_lakes(target_test_lakes, test_t_col)
+  plot_modeled_lakes(source_lakes, source_col)
+  box()
+  #message(paste(par('usr'), collapse = ' '))
+  text(1694114.4, 482064, pos = 2, labels = paste0(toupper(type), '-MTL'), cex = 2)
+}
+
+plot_mtl_tops('pb')
+plot_mtl_tops('pgdl')
+
+dev.off()
