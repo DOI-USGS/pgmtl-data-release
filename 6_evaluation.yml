@@ -20,6 +20,8 @@ targets:
       - out_data/pbmtl_evaluation.csv
       - out_data/pgmtl9_evaluation.csv
       - out_data/pgmtl_evaluation.csv
+      - out_data/sparse_PGDL_vs_PGDL-MTL_rmse.csv
+      - out_data/all_MTL_RMSE_predictions.csv
 
   obs_for_eval:
     command: readRDS('tmp/filtered_observations.rds')
@@ -78,6 +80,16 @@ targets:
   out_data/pbmtl_evaluation.csv:
     command: compare_as_rmse(target_name,
       matched_preds = pbmtl_matched_to_observations)
+      
+  out_data/sparse_PGDL_vs_PGDL-MTL_rmse.csv:
+    command: reshape_sparse_PGDL_csv(target_name,
+      infile = 'in_data/sparseModelResults_Oct2020.csv')
+      
+  out_data/all_MTL_RMSE_predictions.csv:
+    command: create_mtl_rmse_table(target_name,
+      pb_mtl_fl = 'in_data/PB-MTL_all_sources_with_predictions.csv',
+      pg_mtl_fl = 'in_data/PG-MTL_result_matrix_test_lakes_all_sources - PG-MTL_result_matrix_test_lakes_all_source.csv')
+    
 
   tmp/compare_rmses.png:
     command: plot_rmses(

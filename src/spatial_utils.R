@@ -5,9 +5,9 @@ fetch_zip_url_sf <- function(zip_url, layer_name){
   file <- GET(zip_url, write_disk(destination, overwrite=T), progress())
   shp_path <- tempdir()
   unzip(destination, exdir = shp_path)
-
+  
   sf::st_read(shp_path, layer=layer_name) %>%
-    st_transform(crs = 4326) %>% 
+    sf::st_transform(crs = 4326) %>% 
     mutate(state = dataRetrieval::stateCdLookup(STATEFP)) %>% 
     dplyr::select(state, county = NAME)
   

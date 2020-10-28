@@ -3,6 +3,28 @@ split_pb_filenames <- function(files_df){
   extract(files_df, file, c('prefix','site_id','suffix'), "(pb0|pball)_(.*)_(temperatures.feather)", remove = FALSE)
 }
 
+
+create_mtl_rmse_table <- function(filepath, pb_mtl_fl, pg_mtl_fl){
+  
+  pb_mtl <- read_csv(pb_mtl_fl) %>% 
+    rename(actual_pb_mtl_rmse = `pb-mtl_rmse`, pred_pb_mtl_rmse = predicted_rmse) %>% 
+    group_by(target_id) %>% mutate(
+      actual_pb_mtl_rank = rank(actual_pb_mtl_rmse, ties.method = "first"),
+      pred_pb_mtl_rank = rank(pred_pb_mtl_rmse, ties.method = "first")) %>% 
+    select(target_id, source_id, actual_pb_mtl_rmse, pred_pb_mtl_rmse, actual_pb_mtl_rank, pred_pb_mtl_rank) %>% 
+    ungroup()
+  
+  read_csv(pg_mtl_fl) %>% 
+    rename(actual_pgdl_mtl_rmse = `pg-mtl_rmse`, pred_pgdl_mtl_rmse = predicted_rmse) %>% 
+    group_by(target_id) %>% mutate(
+      actual_pgdl_mtl_rank = rank(actual_pgdl_mtl_rmse, ties.method = "first"),
+      pred_pgdl_mtl_rank = rank(pred_pgdl_mtl_rmse, ties.method = "first")) %>% 
+    select(target_id, source_id, actual_pgdl_mtl_rmse, pred_pgdl_mtl_rmse, actual_pgdl_mtl_rank, pred_pgdl_mtl_rank) %>% 
+    arrange(target_id, actual_pgdl_mtl_rank) %>% 
+    ungroup() %>% 
+    inner_join(pb_mtl, by = c('target_id','source_id')) %>% 
+    write_csv(path = filepath)
+}
 extract_id_pbmtl <- function(filepath){
   tibble(source_filename = names(yaml::yaml.load_file(filepath))) %>% rowwise() %>% 
     mutate(site_id = {str_split(basename(source_filename), '_t\\|s_')[[1]][1]}) %>% ungroup() %>%
@@ -420,6 +442,42 @@ zip_pb_export_groups <- function(outfile, file_info_df, site_groups,
   }
   scipiper::sc_indicate(outfile, data_file = data_files)
 
+}
+
+reshape_sparse_PGDL_csv <- function(outfile, infile){
+  # get rid of the unnamed index/row column
+  read_csv(infile) %>% select(-X1) %>% 
+    mutate(site_id = paste0('nhdhr_', site_id)) %>% 
+    pivot_longer(cols = ends_with(' obs median'), names_to = 'n_prof_name', values_to = "median_rmse") %>% 
+    mutate(n_prof = as.numeric(str_remove(n_prof_name, ' obs median'))) %>% 
+    select(site_id, n_prof, median_rmse) %>% 
+    write_csv(path = outfile)
+}
+
+reshape_join_mtl_metafeats <- function(outfile, pbmtl_file, pgdlmtl_file, joint_features){
+  pbmtl_feats <- read_csv(pbmtl_file) %>% select(-`pb-mtl_rmse`, -predicted_rmse) %>% 
+    rename(diff_max_depth = dif_max_depth, diff_surface_area = dif_surface_area, 
+           diff_obs_temp_air = obs_temp_mean_airdif,
+           diff_sw_mean_au = dif_sw_mean_au, diff_ws_mean_au = dif_ws_mean_au, 
+           diff_lathrop_strat = dif_lathrop_strat, diff_glm_strat_perc = dif_glm_strat_perc,
+           abs_diff_glm_strat_perc = ad_glm_strat_perc, perc_diff_max_depth = perc_dif_max_depth,
+           perc_diff_surface_area = perc_dif_surface_area)
+  
+  
+  read_csv(pgdlmtl_file) %>% select(-`pg-mtl_rmse`, -predicted_rmse) %>% 
+    rename(n_obs = source_observations, obs_temp_mean = mean_source_observation_temp, 
+           diff_rh_mean_au = diff_RH_mean_autumn, diff_glm_strat_perc = dif_glm_strat_perc, 
+           perc_diff_max_depth = percent_diff_max_depth, perc_diff_surface_area = percent_diff_surface_area,
+           perc_diff_sqrt_surface_area = perc_dif_sqrt_surface_area) %>% 
+    # removed the redundant features:
+    select(-one_of(joint_features)) %>% 
+    left_join(pbmtl_feats, by = c('target_id','source_id')) %>%
+    select(target_id, source_id, diff_max_depth, perc_diff_max_depth, diff_glm_strat_perc, 
+           diff_surface_area, perc_diff_surface_area, obs_temp_mean, n_obs, perc_diff_sqrt_surface_area, 
+           diff_lathrop_strat, diff_rh_mean_au, diff_obs_temp_air, diff_ws_mean_au, 
+           abs_diff_glm_strat_perc, obs_temp_kurt, diff_sw_mean_au, obs_temp_skew) %>% 
+    write_csv(path = outfile)
+  
 }
 
 zip_this <- function(outfile, .object){

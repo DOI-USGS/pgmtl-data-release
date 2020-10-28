@@ -3,7 +3,7 @@ title: >-
 
 abstract: >-
   This dataset provides model specifications used to estimate water temperature from a process-based model (Hipsey et al. 2019).
-  The format is a single JSON file indexed for each lake based on the "site_id".
+  The format is a single JSON file indexed for each lake based on the "site_id". 
   This dataset is part of a larger data release of lake temperature model inputs and outputs for 2,332 lakes in the U.S.
   (https://doi.org/10.5066/P9I00WFR).
 cross-cites:
@@ -18,7 +18,7 @@ cross-cites:
 entities:
   -
     data-name: pb0_config.json
-    data-description: A JSON file containing parameters for each of the lakes in this study
+    data-description: A JSON file containing the expert-chosen default parameters for each of the lakes in this study.
     attributes:
     -
       attr-label: glm_setup
@@ -164,6 +164,81 @@ entities:
       data-min: NA
       data-max: NA
       data-units: NA
+  -
+    data-name: pball_config.json
+    data-description: >-
+      A JSON file containing parameters for each of the 145 source lakes in this study after calibration to all available temperature data for each source lake. 
+    attributes:
+    -
+      attr-label: glm_setup
+      attr-def: parameters for setting up the General Lake Model and defining constants
+      attr-defs: Hipsey et al. 2019
+      data-min: NA
+      data-max: NA
+      data-units: NA
+    -
+      attr-label: morphometry
+      attr-def: parameters describing the depth/area relationship of the lake for the General Lake Model
+      attr-defs: Hipsey et al. 2019
+      data-min: NA
+      data-max: NA
+      data-units: NA
+    -
+      attr-label: time
+      attr-def: parameters describing the time period and frequency of model runs for the General Lake Model
+      attr-defs: Hipsey et al. 2019
+      data-min: NA
+      data-max: NA
+      data-units: NA
+    -
+      attr-label: output
+      attr-def: parameters describing how the outputs of model runs from the General Lake Model are written
+      attr-defs: Hipsey et al. 2019
+      data-min: NA
+      data-max: NA
+      data-units: NA
+    -
+      attr-label: init_profiles
+      attr-def: parameters describing General Lake Model initial conditions
+      attr-defs: Hipsey et al. 2019
+      data-min: NA
+      data-max: NA
+      data-units: NA
+    -
+      attr-label: meteorology
+      attr-def: parameters describing time series drivers of General Lake Model runs
+      attr-defs: Hipsey et al. 2019
+      data-min: NA
+      data-max: NA
+      data-units: NA
+    -
+      attr-label: bird_model
+      attr-def: parameters describing the use (if applicable) of the Bird model for General Lake Model runs
+      attr-defs: Hipsey et al. 2019
+      data-min: NA
+      data-max: NA
+      data-units: NA
+    -
+      attr-label: inflow
+      attr-def: parameters describing inflows to the General Lake Model
+      attr-defs: Hipsey et al. 2019
+      data-min: NA
+      data-max: NA
+      data-units: NA
+    -
+      attr-label: outflow
+      attr-def: parameters describing outflows from the General Lake Model
+      attr-defs: Hipsey et al. 2019
+      data-min: NA
+      data-max: NA
+      data-units: NA
+    -
+      attr-label: snowice
+      attr-def: parameters describing how snow and ice dynamics are calculated by the General Lake Model
+      attr-defs: Hipsey et al. 2019
+      data-min: NA
+      data-max: NA
+      data-units: NA      
 build-environment: >-
   This dataset was generated using open source tools available in the R programming language (R version 3.6.3 (2020-02-29)).
   The computing platform for generating data and metadata was x86_64-apple-darwin15.6.0.
@@ -175,6 +250,6 @@ latitude-res: 0.1
 longitude-res: 0.1
 data-name: Model configuration details
 data-description: >-
-  Model configurations for running the General Lake Model (Hipsey et al. 2019) version 2 for each lake.
+  Model configurations for running the General Lake Model (Hipsey et al. 2019) version 2.2.0rc5 for each lake.
   The value for "lake_name" in the "morphometry" field is the mapping for "site_id" for the other datasets included in this release.
 file-format: JSON (JavaScript Object Notation) formatted text file

@@ -44,6 +44,7 @@ targets:
       - 04_inputs_sb_image
       - 04_inputs_sb_meteo
       - 04_inputs_sb_ice
+      - 04_inputs_sb_mtl
       - 05_predictions_sb_xml
       - 05_predictions_sb_image
       - 05_predictions_sb_pb0
@@ -117,6 +118,10 @@ targets:
   04_inputs_sb_ice:
     command: sb_replace_files(sbid_04_inputs,
       file_hash = "out/4_ice_flags_zips.yml")
+  
+  04_inputs_sb_mtl:
+    command: sb_replace_files(sbid_04_inputs,
+      "out_data/mtl_input_metafeatures.csv")
 
   05_predictions_sb_xml:
     command: sb_render_post_xml(sbid_05_predictions,
@@ -165,7 +170,9 @@ targets:
       "out_data/pgmtl_matched_to_observations.zip",
       "out_data/pgmtl_evaluation.csv",
       "out_data/pbmtl_matched_to_observations.zip",
-      "out_data/pbmtl_evaluation.csv")
+      "out_data/pbmtl_evaluation.csv",
+      "out_data/sparse_PGDL_vs_PGDL-MTL_rmse.csv",
+      "out_data/all_MTL_RMSE_predictions.csv")
 
   # ------ SB IDs --------
 

@@ -26,6 +26,7 @@ targets:
   4_inputs:
     depends:
       - out_data/input_cells.png
+      - out_data/mtl_input_metafeatures.csv
 
   grouped_meteo_fls:
     command: group_meteo_fls(
@@ -57,3 +58,9 @@ targets:
       county_bounds = us_counties_sf,
       lakes_sf_fl = "../lake-temperature-model-prep/1_crosswalk_fetch/out/canonical_lakes_sf.rds",
       grouped_meteo_fls = grouped_meteo_fls)
+  
+  out_data/mtl_input_metafeatures.csv:
+    command: reshape_join_mtl_metafeats(target_name,
+      pbmtl_file = 'in_data/PB-MTL_all_sources_with_predictions.csv',
+      pgdlmtl_file = 'in_data/PG-MTL_result_matrix_test_lakes_all_sources - PG-MTL_result_matrix_test_lakes_all_source.csv',
+      joint_features = I(c("n_obs", "obs_temp_mean", "diff_max_depth", "diff_surface_area", "diff_lathrop_strat", "diff_glm_strat_perc", "perc_diff_max_depth", "perc_diff_surface_area")))

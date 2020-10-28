@@ -2,8 +2,8 @@ title: >-
   Predicting Water Temperature Dynamics of Unmonitored Lakes with Meta Transfer Learning: 4 Model inputs (meteorological inputs and ice flags)
 
 abstract: >-
-  This dataset includes model inputs (specifically, weather and flags for predicted ice-cover) and is part of a larger data release of lake 
-  temperature model inputs and outputs for 2,332 lakes in the U.S.
+  This dataset includes model inputs (specifically, meteorological inputs to the predictive models and flags for predicted ice-cover) 
+  and is part of a larger data release of lake temperature model inputs and outputs for 2,332 lakes in the U.S.
   states of North Dakota, South Dakota, Minnesota, Wisconsin, and Michigan (https://doi.org/10.5066/P9PPHJE2).
 cross-cites:
   -
@@ -18,7 +18,19 @@ cross-cites:
       A General Lake Model (GLM 3.0) for linking with high-frequency sensor data from the Global Lake Ecological Observatory Network (GLEON).
     pubdate: 2019
     link: https://doi.org/10.5194/gmd-12-473-2019
-
+  -
+    authors: ['Luke A. Winslow','Gretchen J.A. Hansen','Jordan S. Read','Michael Notaro']
+    title: >-
+      Large-scale modeled contemporary and future water temperature estimates for 10,774 Midwestern U.S. Lakes
+    pubdate: 2017
+    link: http://dx.doi.org/10.1038/sdata.2017.53
+  
+  -
+    authors: ['Jared D. Willard', 'Jordan S. Read', 'Alison P. Appling', 'Samantha K. Oliver', 'Xiaowei Jia', 'Vipin Kumar']
+    title: >-
+      Predicting Water Temperature Dynamics of Unmonitored Lakes with Meta Transfer Learning
+    pubdate: UNKNOWN
+    link: UNKNOWN
 entities:
   -
     data-name: input_cells.png
@@ -33,23 +45,221 @@ entities:
       data-units: NA
   -
     data-name: inputs_{group_id}_N{minN-maxN}_W{minW-maxW}.zip
-    data-description: A zip file containing individual meteorological csv files that were used as inputs to run lake temperature simulations
+    data-description: >-
+      A zip file containing individual meteorological csv files that were used as inputs to run lake temperature simulations. See
+      lake metadata file to match csv file names to the associated lake site_id (some meteorological files apply to multiple lakes). 
     attributes:
     -
-      attr-label: FILL THIS IN
-      attr-def: NA
+      attr-label: time
+      attr-def: Date of this weather estimate. 
+      attr-defs: This data release
+      data-min: >-
+        1979-01-02
+      data-max: >-
+        2020-01-01
+      data-units: NA
+    -
+      attr-label: ShortWave
+      attr-def: >-
+        Incoming radiant energy with wavelengths between ~300 and ~3000 nm, 
+        emitted by the sun and reaching the lake surface after passing through the atmosphere, as a daily average.
       attr-defs: This data release
       data-min: NA
       data-max: NA
-      data-units: NA
+      data-units: W m-2
+    -
+      attr-label: LongWave
+      attr-def: >-
+        Incoming thermal radiation at wavelengths > 3000 nm directed from the atmosphere to the lake surface, as a daily average.
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: W m-2
+    -
+      attr-label: AirTemp
+      attr-def: Air temperature above the surface of the lake, as a daily average.
+      attr-defs: This data release
+      data-min: NA
+      data-max: NA
+      data-units: degrees C
+    -
+      attr-label: RelHum
+      attr-def: Relative humidity of the air above the surface of the lake, as a daily average.
+      attr-defs: This data release
+      data-min: 0
+      data-max: 100
+      data-units: >-
+        %
+    -
+      attr-label: WindSpeed
+      attr-def: Speed of the wind above the lake, calculated to a daily number using the methods described in Winslow et al. 2017.
+      attr-defs: This data release
+      data-min: 0
+      data-max: 100
+      data-units: >-
+        %
+    -
+      attr-label: Rain
+      attr-def: Daily rate of rain reaching the lake surface in a day as described in Winslow et al. 2017; rate as determined by Hipsey et al. 2019.
+      attr-defs: This data release
+      data-min: 0
+      data-max: NA
+      data-units: m day−1
+    -
+      attr-label: Snow
+      attr-def: Daily rate of snow reaching the lake surface in a day as described in Winslow et al. 2017.
+      attr-defs: This data release
+      data-min: 0
+      data-max: NA
+      data-units: m day−1
   -
     data-name: ice_flags_{group_id}_N{minN-maxN}_W{minW-maxW}.zip
     data-description: A zip file containing individual lake ice csv files that capture whether the lake was estimated to have ice cover for each day of the simulation
     attributes:
     -
-      attr-label: FILL THIS IN
-      attr-def: NA
+      attr-label: date
+      attr-def: Date of this ice prediction. 
       attr-defs: This data release
+      data-min: >-
+        1980-01-01
+      data-max: >-
+        2019-12-31
+      data-units: NA
+    -
+      attr-label: ice
+      attr-def: A boolean for whether this lake was predicted to have ice cover on a given day. These estimates come from the PB0 model outputs
+      attr-defs: This data release
+      data-min: >-
+        FALSE
+      data-max: >-
+        TRUE
+      data-units: NA
+  -
+    data-name: mtl_input_metafeatures.csv
+    data-description: A csv file that contains source target metafeature values for the 305 primary target lakes and 145 source lakes.
+    attributes:
+    -
+      attr-label: target_id
+      attr-def: >-
+        Lake identification number for this dataset. Is the Prmnn_I prefixed with source, as "nhd_{Prmnn_I}". The "target" lake being predicted
+      attr-defs: >-
+        http://nhd.usgs.gov/
+      data-min: NA
+      data-max: NA
+      data-units: NA
+    -
+      attr-label: source_id
+      attr-def: >-
+        Lake identification number for this dataset. Is the Prmnn_I prefixed with source, as "nhd_{Prmnn_I}". The "source" lake being transfered to predict temperatures of the target lake
+      attr-defs: >-
+        http://nhd.usgs.gov/
+      data-min: NA
+      data-max: NA
+      data-units: NA
+    -
+      attr-label: diff_max_depth
+      attr-def: Difference in maximum depth between the source and target lake (source max depth minus target max depth).
+      attr-defs: Willard et al. 2021
+      data-min: NA
+      data-max: NA
+      data-units: m
+    -
+      attr-label: perc_diff_max_depth
+      attr-def: >- 
+        Percent difference in maximum depth between the source and target lake 
+        (absolute value of source max depth minus target max depth, divided by mean of source and target max depth, and multiplied by 100).
+      attr-defs: Willard et al. 2021
+      data-min: NA
+      data-max: NA
+      data-units: percentage
+    -
+      attr-label: diff_glm_strat_perc
+      attr-def: Difference in GLM (PB0) stratification percentage (source minus target)
+      attr-defs: Willard et al. 2021
+      data-min: NA
+      data-max: NA
+      data-units: percent days stratified
+    -
+      attr-label: diff_surface_area
+      attr-def: Difference in surface area (source minus target)
+      attr-defs: Willard et al. 2021
+      data-min: NA
+      data-max: NA
+      data-units: m2
+    -
+      attr-label: perc_diff_surface_area
+      attr-def: Percent difference in surface area (absolute value of source minus target, divided by mean of source and target, and multiplied by 100).
+      attr-defs: Willard et al. 2021
+      data-min: NA
+      data-max: NA
+      data-units: NA
+    -
+      attr-label: obs_temp_mean
+      attr-def: Mean temperature of all source lake observations
+      attr-defs: Willard et al. 2021
+      data-min: NA
+      data-max: NA
+      data-units: degrees C
+    -
+      attr-label: perc_diff_sqrt_surface_area
+      attr-def: Percent difference in square root of surface area (absolute value of source minus target, divided by mean of source and target, and multiplied by 100).
+      attr-defs: Willard et al. 2021
+      data-min: NA
+      data-max: NA
+      data-units: NA
+    -
+      attr-label: diff_lathrop_strat
+      attr-def: Difference in Lathrop stratification estimate (source minus target). lathrop_strat is binary, so this value can only be -1, 0, or 1. 
+      attr-defs: Willard et al. 2021
+      data-min: -1
+      data-max: 1
+      data-units: NA
+    -
+      attr-label: diff_rh_mean_au
+      attr-def: Difference in average relative humidity in autumn season (source minus target).
+      attr-defs: Willard et al. 2021
+      data-min: NA
+      data-max: NA
+      data-units: percentage humidity
+    -
+      attr-label: diff_obs_temp_air
+      attr-def: Difference between source temperature observations and the target air temperatures (source observed water temperature minus target air temperature).
+      attr-defs: Willard et al. 2021
+      data-min: NA
+      data-max: NA
+      data-units: degrees C
+    -
+      attr-label: diff_ws_mean_au
+      attr-def: Difference in average wind speed in autumn season (source minus target).
+      attr-defs: Willard et al. 2021
+      data-min: NA
+      data-max: NA
+      data-units: m s-1
+    -
+      attr-label: abs_diff_glm_strat_perc
+      attr-def: Absolute difference in GLM (PB0) stratification.
+      attr-defs: Willard et al. 2021
+      data-min: NA
+      data-max: NA
+      data-units: NA
+    -
+      attr-label: obs_temp_kurt
+      attr-def: Kurtosis of temperature observations for the source lake
+      attr-defs: Willard et al. 2021
+      data-min: NA
+      data-max: NA
+      data-units: NA
+    -
+      attr-label: diff_sw_mean_au
+      attr-def: Difference in average solar radiation in autumn season (source minus target).
+      attr-defs: Willard et al. 2021
+      data-min: NA
+      data-max: NA
+      data-units: NA
+    -
+      attr-label: obs_temp_skew
+      attr-def: Skewness of temperature observations for the source lake
+      attr-defs: Willard et al. 2021
       data-min: NA
       data-max: NA
       data-units: NA
