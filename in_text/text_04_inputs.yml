@@ -209,7 +209,7 @@ entities:
       data-units: NA
     -
       attr-label: diff_lathrop_strat
-      attr-def: Difference in surface area (source minus target). lathrop_strat is binary, so this value can only be -1, 0, or 1. 
+      attr-def: Difference in Lathrop stratification estimate (source minus target). lathrop_strat is binary, so this value can only be -1, 0, or 1. 
       attr-defs: Willard et al. 2021
       data-min: -1
       data-max: 1
