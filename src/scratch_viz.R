@@ -40,14 +40,39 @@ top9_counts <- mtl_rmses %>% group_by(source_id) %>%
 # Autumn Relative Humidity Difference: rh_mean_au
 # Lathrop Stratification Difference: lathrop_strat (but is binary)
 
+get_boxplot_stats <- function(data, boxplot_stat = c('min','max','lower','upper','median')){
+  stat_idx <- c('min' = 1, 'max' = 5, 'lower' = 2, 'upper' = 4, 'median' = 3)
+  return(boxplot(data, plot = FALSE)$stats[stat_idx[[boxplot_stat]]])
+}
+
 # ylim needs to be the gaps plus the max dot stacks for each one...
 png('~/Downloads/fancy_jared_plot.png', width = 9, height = 2.5, units = 'in', res = 230)
-par(omi = c(0,0,0,0), mai = c(0,2,0,0))
+par(omi = c(0,0,0,0), mai = c(0.3,2,0,0), mgp = c(3,0.2,0), xpd = TRUE)
 
 layout(matrix(1:6, 3,byrow = F))
 
 titles <- c('pg_group' = 'PGDL-MTL','pb_group' = 'PB-MTL')
 rank_names <- c('pg_group' = 'pred_pb_mtl_rank', 'pb_group' = 'pred_pgdl_mtl_rank')
+
+plot_details <- list(log_n_obs = 
+                       list(xlim = c(log(100), log(20000)),
+                            at = c(log(100), log(1000), log(10000), 1000),
+                            labels = c('100','1,000','10,000', ''),
+                            title = c('Number of','observations (#)')),
+                     log_surface_area = 
+                       list(xlim = c(log(10000), log(300000000)),
+                            at = c(log(10000), log(100000), log(1000000), log(10000000), log(100000000),log(1000000000), 1000),
+                            labels = c('0.01','0.1','1', '10', '100', '1000',''),
+                            title = c(expression(paste("Surface area (km"^"2",")")))),
+                     max_depth =
+                       list(xlim = c(0, 43),
+                            at = seq(0, 100, by = 10),
+                            labels = seq(0, 100, by = 10),
+                            title = c('Maximum depth (m)'))
+)
+
+x_cnt = 0
+y_cnt = 0
 for (model_group in c('pg_group', 'pb_group')){
   
   for (plot_var_name in rev(c('max_depth','log_surface_area', 'log_n_obs'))){
@@ -56,11 +81,11 @@ for (model_group in c('pg_group', 'pb_group')){
     df <- lake_metadata %>% 
       inner_join(top9_counts, by = 'site_id') %>% filter(.data[[model_group]] %in% c('bottom','top')) %>% 
       group_by(.data[[model_group]]) %>% 
-      summarize(med = median(.data[[plot_var_name]]), 
-                low = quantile(.data[[plot_var_name]], probs = 0.25),
-                high = quantile(.data[[plot_var_name]], probs = 0.75), 
-                max = min(c(high+(high-low)*1.5), max(.data[[plot_var_name]])), 
-                min = min(c(low-(high-low)*1.5), min(.data[[plot_var_name]])), 
+      summarize(med = get_boxplot_stats(.data[[plot_var_name]], boxplot_stat = "median"),
+                low = get_boxplot_stats(.data[[plot_var_name]], boxplot_stat = "lower"),
+                high = get_boxplot_stats(.data[[plot_var_name]], boxplot_stat = "upper"),
+                max = get_boxplot_stats(.data[[plot_var_name]], boxplot_stat = "max"),
+                min = get_boxplot_stats(.data[[plot_var_name]], boxplot_stat = "min"),
                 .groups = 'drop') 
     
     source_ids <- group_by(mtl_rmses, source_id) %>% 
@@ -69,32 +94,50 @@ for (model_group in c('pg_group', 'pb_group')){
     
     top_pts <- lake_metadata %>% filter(site_id %in% source_ids) %>% 
       pull(.data[[plot_var_name]])
+    # all possible points/lakes that are in the quartiles:
+    bot_high_pts <- lake_metadata %>% inner_join(top9_counts, by = 'site_id') %>% 
+      filter(.data[[model_group]] %in% c('bottom','top')) %>% 
+      select(.data[[model_group]], .data[[plot_var_name]])
+    
     bottom <- df %>% filter(.data[[model_group]] == 'bottom')
     top <- df %>% filter(.data[[model_group]] == 'top')
     
-    plot(0, NA, xpd = TRUE, axes = FALSE, ylab = "", xlab = "", xlim = c(min(df$min), max(df$max)), ylim = c(-1,1))
+    this_plot <- plot_details[[plot_var_name]]
     
+    plot(0, NA, xpd = TRUE, axes = FALSE, ylab = "", xlab = "", xlim = this_plot$xlim, ylim = c(-0.5,0.5))
+    axis(side = 1, at = this_plot$at, labels = this_plot$labels, tck = -0.03)
     
-    y_mid_bot <- - 0.3
+    y_mid_bot <- - 0.23
     lines(c(bottom$max, bottom$min), c(y_mid_bot, y_mid_bot))
-    polygon(c(bottom$low, bottom$low, bottom$high, bottom$-high), c(y_mid_bot-0.2, y_mid_bot+0.2, y_mid_bot+0.2, y_mid_bot-0.2), 
+    polygon(c(bottom$low, bottom$low, bottom$high, bottom$high), c(y_mid_bot-0.2, y_mid_bot+0.2, y_mid_bot+0.2, y_mid_bot-0.2), 
             col = 'white', border = NA)
     polygon(c(bottom$low, bottom$low, bottom$high, bottom$high), c(y_mid_bot-0.2, y_mid_bot+0.2, y_mid_bot+0.2, y_mid_bot-0.2), 
             col = 'grey40', density = 20, border = 'black')
-    lines(c(bottom$med, bottom$med), c(y_mid_bot+0.3, y_mid_bot-0.3), lwd = 2)
+    lines(c(bottom$med, bottom$med), c(y_mid_bot+0.2, y_mid_bot-0.2), lwd = 2, lend = 1)
+    bot_outliers <- bot_high_pts %>% 
+      filter(.data[[model_group]] == 'bottom', .data[[plot_var_name]] > bottom$max | .data[[plot_var_name]] < bottom$min) %>% 
+      pull(.data[[plot_var_name]])
+    points(bot_outliers, y = rep(y_mid_bot, length(bot_outliers)), col = 'grey30', pch = 18, cex = 0.8)
     
-    y_mid_top <- 0.3
+    y_mid_top <- 0.23
     lines(c(top$max, top$min), c(y_mid_top, y_mid_top))
     polygon(c(top$low, top$low, top$high, top$high), c(y_mid_top-0.2, y_mid_top+0.2, y_mid_top+0.2, y_mid_top-0.2), 
             col = 'white')
-    lines(c(top$med, top$med), c(y_mid_top+0.3, y_mid_top-0.3), lwd = 2)
+    lines(c(top$med, top$med), c(y_mid_top+0.2, y_mid_top-0.2), lwd = 2, lend = 1)
     points(top_pts, y = rep(y_mid_top, length(top_pts)), col = '#ca0020', pch = 16, cex = 1.1)
+    top_outliers <- bot_high_pts %>% 
+      filter(.data[[model_group]] == 'top', .data[[plot_var_name]] > top$max | .data[[plot_var_name]] < top$min) %>% 
+      pull(.data[[plot_var_name]])
+    points(top_outliers, y = rep(y_mid_top, length(top_outliers)), col = 'grey30', pch = 18, cex = 0.8)
     
-    text(n_dot_bins/2+x_cnt, y_cnt * offset_mult-offset_mult/2 + 1.25, plot_var_name)
-    y_cnt <- y_cnt + 1
+    if (length(this_plot$title) == 1){
+      text(this_plot$xlim[1], 0, this_plot$title[1], pos = 2, cex = 1.4, offset = 2)
+    } else {
+      text(this_plot$xlim[1], 0.18, this_plot$title[1], pos = 2, cex = 1.4, offset = 2)
+      text(this_plot$xlim[1], -0.18, this_plot$title[2], pos = 2, cex = 1.4, offset = 2)
+    }
+    
   }
-  text(n_dot_bins/2+x_cnt, 55, titles[[model_group]], cex = 1.4)
-  x_cnt <- x_cnt + n_dot_bins+5
 }
 dev.off()
 
