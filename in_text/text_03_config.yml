@@ -1,11 +1,17 @@
 title: >-
-  Predicting Water Temperature Dynamics of Unmonitored Lakes with Meta Transfer Learning: 3 Model configurations (lake metadata and parameter values)
+  Predicting Water Temperature Dynamics of Unmonitored Lakes with Meta Transfer Learning: 3 Model configurations (Provisional Data Release)
 
 abstract: >-
+  <p>These data are preliminary or provisional and are subject to revision. They are being provided to meet the need for timely best science. 
+  The data have not received final approval by the U.S. Geological Survey (USGS) and are provided on the condition that neither the USGS 
+  nor the U.S. Government shall be held liable for any damages resulting from the authorized or unauthorized use of the data.
+  <br/>
+  <br/>
   This dataset provides model specifications used to estimate water temperature from a process-based model (Hipsey et al. 2019).
   The format is a single JSON file indexed for each lake based on the "site_id". 
   This dataset is part of a larger data release of lake temperature model inputs and outputs for 2,332 lakes in the U.S.
   (https://doi.org/10.5066/P9I00WFR).
+  </p>
 cross-cites:
   -
     authors: ['Matthew R. Hipsey', 'Louise C. Bruce', 'Casper Boon', 'Brendan Busch', 'Cayelan C. Carey', 'David P. Hamilton', 'Paul C. Hanson', 'Jordan S. Read', 'Eduardo de Sousa', 'Michael Weber', 'Luke A. Winslow']

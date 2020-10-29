@@ -1,8 +1,13 @@
 title: >-
-  Data release: Predicting Water Temperature Dynamics of Unmonitored Lakes with Meta Transfer Learning
+  Data release: Predicting Water Temperature Dynamics of Unmonitored Lakes with Meta Transfer Learning (Provisional Data Release)
 
 abstract: >-
-  <p>Climate change and land use change have been shown to influence lake temperatures and water clarity in different ways. To better understand the diversity of lake responses to
+  <p>These data are preliminary or provisional and are subject to revision. They are being provided to meet the need for timely best science. 
+  The data have not received final approval by the U.S. Geological Survey (USGS) and are provided on the condition that neither the USGS 
+  nor the U.S. Government shall be held liable for any damages resulting from the authorized or unauthorized use of the data.
+  <br/>
+  <br/>
+  Climate change and land use change have been shown to influence lake temperatures and water clarity in different ways. To better understand the diversity of lake responses to
   climate change and give managers tools to manage individual lakes, we focused on improving prediction accuracy for daily water
   temperature profiles in 2,332 lakes during 1980-2019.
   <br/>The data are organized into these items:</p>

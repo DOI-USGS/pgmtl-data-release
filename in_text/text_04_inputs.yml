@@ -1,10 +1,16 @@
 title: >-
-  Predicting Water Temperature Dynamics of Unmonitored Lakes with Meta Transfer Learning: 4 Model inputs (meteorological inputs and ice flags)
+  Predicting Water Temperature Dynamics of Unmonitored Lakes with Meta Transfer Learning: 4 Model inputs (Provisional Data Release)
 
 abstract: >-
+  <p>These data are preliminary or provisional and are subject to revision. They are being provided to meet the need for timely best science. 
+  The data have not received final approval by the U.S. Geological Survey (USGS) and are provided on the condition that neither the USGS 
+  nor the U.S. Government shall be held liable for any damages resulting from the authorized or unauthorized use of the data.
+  <br/>
+  <br/>
   This dataset includes model inputs (specifically, meteorological inputs to the predictive models and flags for predicted ice-cover) 
   and is part of a larger data release of lake temperature model inputs and outputs for 2,332 lakes in the U.S.
   states of North Dakota, South Dakota, Minnesota, Wisconsin, and Michigan (https://doi.org/10.5066/P9PPHJE2).
+  </p>
 cross-cites:
   -
     authors: ['Kenneth E. Mitchell','Dag Lohmann','Paul R. Houser','Eric F. Wood','John C. Schaake','Alan Robock','Brian A. Cosgrove','Justin Sheffield','Qingyun Duan','Lifeng Luo','R. Wayne Higgins','Rachel T. Pinker','J. Dan Tarpley','Dennis P. Lettenmaier','Curtis H. Marshall','Jared K. Entin','Ming Pan','Wei Shi','Victor Koren','Jesse Meng','Bruce H. Ramsay','Andrew A. Bailey']
