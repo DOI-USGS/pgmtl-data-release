@@ -1,14 +1,10 @@
 title: >-
-  Predicting Water Temperature Dynamics of Unmonitored Lakes with Meta Transfer Learning: 6 model evaluation (Provisional Data Release)
+  Predicting Water Temperature Dynamics of Unmonitored Lakes with Meta Transfer Learning: 6 model evaluation
 
 abstract: >-
-  <p>These data are preliminary or provisional and are subject to revision. They are being provided to meet the need for timely best science. 
-  The data have not received final approval by the U.S. Geological Survey (USGS) and are provided on the condition that neither the USGS 
-  nor the U.S. Government shall be held liable for any damages resulting from the authorized or unauthorized use of the data.
-  <br/>
-  <br/>
-  Predictions are evaluated against observed temperatures. 
-  </p>
+  Water temperature predictions evaluated against observed temperatures. Various models are tested and expected performance is compared
+  to actual performance. These files are part of a larger data release of lake temperature model inputs and outputs for 2,332 lakes in the U.S.
+  states of North Dakota, South Dakota, Minnesota, Wisconsin, and Michigan (https://doi.org/10.5066/P9PPHJE2).
   
   
 cross-cites:  

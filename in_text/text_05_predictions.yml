@@ -1,19 +1,14 @@
 title: >-
-  Predicting Water Temperature Dynamics of Unmonitored Lakes with Meta Transfer Learning: 5 Model predictions (Provisional Data Release)
+  Predicting Water Temperature Dynamics of Unmonitored Lakes with Meta Transfer Learning: 5 Model predictions
 
 abstract: >-
-  <p>These data are preliminary or provisional and are subject to revision. They are being provided to meet the need for timely best science. 
-  The data have not received final approval by the U.S. Geological Survey (USGS) and are provided on the condition that neither the USGS 
-  nor the U.S. Government shall be held liable for any damages resulting from the authorized or unauthorized use of the data.
-  <br/>
-  <br/>
   Multiple modeling frameworks were used to predict daily temperatures at 0.5m depth intervals for a set of diverse lakes in the U.S.
   states of South Dakota, North Dakota, Minnesota, Wisconsin, and Michigan. Process-Based (PB) models were configured and calibrated with training data to reduce root-mean squared error.
   Uncalibrated models used default configurations (PB0; see Winslow et al. 2016 for details) and no parameters were adjusted according to model fit with observations.
   Process-Guided Deep Learning (PGDL) models were deep learning models with an added physical constraint for energy conservation as a loss term. These models were pre-trained with
   uncalibrated Process-Based model outputs (PB0) before training on actual temperature observations. PBall and PGDL models were transfered to other lakes with a meta transfer learning model
-  (PB-MTL; PGDL-MTL) and for PGDL transfers, an additional ensemble estimate was created based on the top nine source lakes (PGDL-MTL9).
-  </p>
+  (PB-MTL; PGDL-MTL) and for PGDL transfers, an additional ensemble estimate was created based on the top nine source lakes (PGDL-MTL9). These files are part of a larger data release of lake temperature model inputs and outputs for 2,332 lakes in the U.S.
+  states of North Dakota, South Dakota, Minnesota, Wisconsin, and Michigan (https://doi.org/10.5066/P9PPHJE2).
 
 cross-cites:
   -
