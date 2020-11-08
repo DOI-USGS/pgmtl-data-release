@@ -94,7 +94,8 @@ targets:
       meteo_fl_info = xwalk_meteo_fl_names,
       gnis_names_fl = '../lake-temperature-model-prep/2_crosswalk_munge/out/gnisname_nhdhr_xwalk.rds',
       meta_fl = 'in_data/All_Metadata - Sheet1.csv',
-      target_ids = target_ids,
+      target_ids = target_test_ids, 
+      ext_target_ids = target_expansion_ids, 
       source_ids = source_ids)
 
   out_data/modeling_domain_map.png:

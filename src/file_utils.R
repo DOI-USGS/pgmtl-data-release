@@ -66,11 +66,12 @@ xwalk_meteo_lat_lon <- function(meteo_fl, meteo_dir, ldas_grid){
 }
 
 create_metadata_file <- function(fileout, sites, table, lakes_sf, nml_json_fl, lat_lon_fl, 
-                                 meteo_fl_info, gnis_names_fl, meta_fl, target_ids, source_ids){
+                                 meteo_fl_info, gnis_names_fl, meta_fl, target_ids, ext_target_ids, source_ids){
   
   source_type <- tibble(site_id = source_ids, type = 'source')
   target_type <- tibble(site_id = target_ids, type = 'target')
-  site_types <- rbind(source_type, target_type)
+  ext_target_type <- tibble(site_id = ext_target_ids, type = 'ext_target')
+  site_types <- rbind(source_type, target_type, ext_target_type)
   sdf <- sf::st_transform(lakes_sf, 2811) %>%
     mutate(perim = lwgeom::st_perimeter_2d(Shape), area = sf::st_area(Shape), circle_perim = 2*pi*sqrt(area/pi), SDF = perim/circle_perim) %>%
     sf::st_drop_geometry() %>% select(site_id, SDF)
@@ -451,6 +452,8 @@ reshape_sparse_PGDL_csv <- function(outfile, infile){
     pivot_longer(cols = ends_with(' obs median'), names_to = 'n_prof_name', values_to = "median_rmse") %>% 
     mutate(n_prof = as.numeric(str_remove(n_prof_name, ' obs median'))) %>% 
     select(site_id, n_prof, median_rmse) %>% 
+    # remove models that were not evaluated because they didn't exist. Jared set these as RMSE = 0:
+    filter(median_rmse > 0) %>% 
     write_csv(path = outfile)
 }
 

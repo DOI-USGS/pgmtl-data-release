@@ -91,7 +91,9 @@ entities:
     -
       attr-label: type
       attr-def: >-
-        the type of lake, "source" or "target". Models are trained or calibrated for source lakes and applied to target lakes. 
+        the type of lake, "source", "target", or "ext_target". Models are trained or calibrated for source lakes and applied to target lakes. 
+        "target" includes the 305 target lakes with full evaluation of transfer rank and rmse performance for all models. "ext_target" applies 
+        to only PGDL transfers and these lakes have less comprehensive evaluation. 
       attr-defs: This data release
       data-min: NA
       data-max: NA
@@ -554,7 +556,7 @@ entities:
       attr-label: n_obs
       attr-def: >-
         The number of temperature observations used to categorize source lakes (not used as a metafeature for target lakes, 
-        even while appears in the data release)
+        even though it appears in the data release)
       attr-defs: This data release
       data-min: 9
       data-max: 61211
@@ -563,7 +565,7 @@ entities:
       attr-label: n_prof
       attr-def: >-
         The number of dates with a temperature profile (see Willard et al. 2021 for profile calculation rules) used to categorize source 
-        lakes (not used as a metafeature for target lakes, even while appears in the data release)
+        lakes (not used as a metafeature for target lakes, even though it appears  in the data release)
       attr-defs: This data release
       data-min: 5
       data-max: 5635
@@ -572,7 +574,7 @@ entities:
       attr-label: n_obs_wi
       attr-def: >-
         The number of temperature observations in the winter used to categorize source lakes (not used as a metafeature for target lakes, 
-        even while appears in the data release)
+        even though it appears  in the data release)
       attr-defs: This data release
       data-min: 0
       data-max: 11523
@@ -581,7 +583,7 @@ entities:
       attr-label: n_obs_sp
       attr-def: >-
         The number of temperature observations in the spring used to categorize source lakes (not used as a metafeature for target lakes, 
-        even while appears in the data release)
+        even though it appears  in the data release)
       attr-defs: This data release
       data-min: 0
       data-max: 16898
@@ -590,7 +592,7 @@ entities:
       attr-label: n_obs_su
       attr-def: >-
         The number of temperature observations in the summer used to categorize source lakes (not used as a metafeature for target lakes, 
-        even while appears in the data release)
+        even though it appears  in the data release)
       attr-defs: This data release
       data-min: 3
       data-max: 30305
@@ -599,7 +601,7 @@ entities:
       attr-label: n_obs_au
       attr-def: >-
         The number of temperature observations in the autum used to categorize source lakes (not used as a metafeature for target lakes, 
-        even while appears in the data release)
+        even though it appears  in the data release)
       attr-defs: This data release
       data-min: 0
       data-max: 13971
@@ -612,7 +614,7 @@ entities:
         below the maximum depth were excluded. This happened in some cases because a deeper basin was considered part of the same lake for 
         temperature monitoring purposes, but considered a separate lake for reporting maximum depth, or is indicative of errors. A value of 
         0 for a given lake means all measurements were taken at the surface. This value was not used as a metafeature for target lakes, 
-        even while appears in the data release.
+        even though it appears  in the data release.
       attr-defs: This data release
       data-min: 0
       data-max: 2.12
@@ -621,7 +623,7 @@ entities:
       attr-label: obs_temp_mean
       attr-def: >-
         The mean temperature of observations. This value was not used as a metafeature for target lakes, 
-        even while appears in the data release.
+        even though it appears  in the data release.
       attr-defs: This data release
       data-min: 3.60
       data-max: 25.3
@@ -630,7 +632,7 @@ entities:
       attr-label: obs_temp_std
       attr-def: >-
         The standard deviation of temperature of observations. This value was not used as a metafeature for target lakes, 
-        even while appears in the data release.
+        even though it appears  in the data release.
       attr-defs: This data release
       data-min: 1.44
       data-max: 10.2
@@ -639,7 +641,7 @@ entities:
       attr-label: obs_temp_skew
       attr-def: >-
         The skew of temperature of observations. This value was not used as a metafeature for target lakes, 
-        even while appears in the data release.
+        even though it appears  in the data release.
       attr-defs: This data release
       data-min: NA
       data-max: NA
@@ -648,7 +650,7 @@ entities:
       attr-label: obs_temp_kurt
       attr-def: >-
         The kurtosis of temperature of observations. This value was not used as a metafeature for target lakes, 
-        even while appears in the data release.
+        even though it appears  in the data release.
       attr-defs: This data release
       data-min: NA
       data-max: NA
@@ -712,8 +714,8 @@ entities:
 
 data-name: Polygons for study lakes; metadata file describing properties of each lake
 data-description: Shapefile of study lakes included in this data release; metadata file for lakes in this data release
-
 file-format: Shapefile Data Set; comma-delimited metadata file
+process-date: !expr format(Sys.time(),'%Y%m%d')
 
 build-environment: >-
   This dataset was generated using open source tools available in the R programming language (R version 3.6.1 (2019-07-05)).
