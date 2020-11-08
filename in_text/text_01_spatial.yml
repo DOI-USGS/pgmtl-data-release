@@ -91,7 +91,9 @@ entities:
     -
       attr-label: type
       attr-def: >-
-        the type of lake, "source" or "target". Models are trained or calibrated for source lakes and applied to target lakes. 
+        the type of lake, "source", "target", or "ext_target". Models are trained or calibrated for source lakes and applied to target lakes. 
+        "target" includes the 305 target lakes with full evaluation of transfer rank and rmse performance for all models. "ext_target" applies 
+        to only PGDL transfers and these lakes have less comprehensive evaluation. 
       attr-defs: This data release
       data-min: NA
       data-max: NA

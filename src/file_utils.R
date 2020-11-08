@@ -66,11 +66,12 @@ xwalk_meteo_lat_lon <- function(meteo_fl, meteo_dir, ldas_grid){
 }
 
 create_metadata_file <- function(fileout, sites, table, lakes_sf, nml_json_fl, lat_lon_fl, 
-                                 meteo_fl_info, gnis_names_fl, meta_fl, target_ids, source_ids){
+                                 meteo_fl_info, gnis_names_fl, meta_fl, target_ids, ext_target_ids, source_ids){
   
   source_type <- tibble(site_id = source_ids, type = 'source')
   target_type <- tibble(site_id = target_ids, type = 'target')
-  site_types <- rbind(source_type, target_type)
+  ext_target_type <- tibble(site_id = ext_target_ids, type = 'ext_target')
+  site_types <- rbind(source_type, target_type, ext_target_type)
   sdf <- sf::st_transform(lakes_sf, 2811) %>%
     mutate(perim = lwgeom::st_perimeter_2d(Shape), area = sf::st_area(Shape), circle_perim = 2*pi*sqrt(area/pi), SDF = perim/circle_perim) %>%
     sf::st_drop_geometry() %>% select(site_id, SDF)
