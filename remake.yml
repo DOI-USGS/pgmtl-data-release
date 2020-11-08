@@ -60,14 +60,20 @@ targets:
   out_xml/00_parent.xml:
     command: render(filename = target_name,
       "in_text/text_SHARED.yml",
-      "in_text/text_00_parent.yml")
+      "in_text/text_00_parent.yml",
+      spatial_metadata)
 
   00_parent_sb_xml:
     command: sb_render_post_xml(sbid_00_parent,
       "in_text/text_SHARED.yml",
       "in_text/text_00_parent.yml",
       spatial_metadata)
-
+  
+  out_xml/01_spatial.xml:
+    command: render(filename = target_name,
+      "in_text/text_SHARED.yml",
+      "in_text/text_01_spatial.yml",
+      spatial_metadata)
   01_spatial_sb_xml:
     command: sb_render_post_xml(sbid_01_spatial,
       "in_text/text_SHARED.yml",
@@ -85,12 +91,22 @@ targets:
     command: sb_replace_files(sbid_02_observations,
       "out_data/temperature_observations.zip")
 
+  out_xml/02_observations.xml:
+    command: render(filename = target_name,
+      "in_text/text_SHARED.yml",
+      "in_text/text_02_observations.yml",
+      spatial_metadata)
   02_observations_sb_xml:
     command: sb_render_post_xml(sbid_02_observations,
       "in_text/text_SHARED.yml",
       "in_text/text_02_observations.yml",
       spatial_metadata)
 
+  out_xml/03_config.xml:
+    command: render(filename = target_name,
+      "in_text/text_SHARED.yml",
+      "in_text/text_03_config.yml",
+      spatial_metadata)
   03_config_sb_xml:
     command: sb_render_post_xml(sbid_03_config,
       "in_text/text_SHARED.yml",
@@ -101,11 +117,17 @@ targets:
     command: sb_replace_files(sbid_03_config,
       "out_data/pb0_config.json",
       "out_data/pball_config.json")
-
+  
+  out_xml/04_inputs.xml:
+    command: render(filename = target_name,
+      "in_text/text_SHARED.yml",
+      "in_text/text_04_inputs.yml",
+      spatial_metadata)
   04_inputs_sb_xml:
     command: sb_render_post_xml(sbid_04_inputs,
       "in_text/text_SHARED.yml",
-      "in_text/text_04_inputs.yml")
+      "in_text/text_04_inputs.yml",
+      spatial_metadata)
 
   04_inputs_sb_meteo:
     command: sb_replace_files(sbid_04_inputs,
@@ -122,7 +144,12 @@ targets:
   04_inputs_sb_mtl:
     command: sb_replace_files(sbid_04_inputs,
       "out_data/mtl_input_metafeatures.csv")
-
+  
+  out_xml/05_predictions.xml:
+    command: render(filename = target_name,
+      "in_text/text_SHARED.yml",
+      "in_text/text_05_predictions.yml",
+      spatial_metadata)
   05_predictions_sb_xml:
     command: sb_render_post_xml(sbid_05_predictions,
       "in_text/text_SHARED.yml",
@@ -152,7 +179,12 @@ targets:
   05_predictions_sb_pbmtl:      
     command: sb_replace_files(sbid_05_predictions,
       file_hash = "out/5_pbmtl_predict_zips.yml")
-      
+
+  out_xml/06_evaluation.xml:
+    command: render(filename = target_name,
+      "in_text/text_SHARED.yml",
+      "in_text/text_06_evaluation.yml",
+      spatial_metadata)    
   06_evaluation_sb_xml:
     command: sb_render_post_xml(sb_id_06_evaluation,
       "in_text/text_SHARED.yml",

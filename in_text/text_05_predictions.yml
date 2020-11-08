@@ -8,11 +8,11 @@ abstract: >-
   <br/>
   <br/>
   Multiple modeling frameworks were used to predict daily temperatures at 0.5m depth intervals for a set of diverse lakes in the U.S.
-  states of Minnesota and Wisconsin. Process-Based (PB) models were configured and calibrated with training data to reduce root-mean squared error.
+  states of South Dakota, North Dakota, Minnesota, Wisconsin, and Michigan. Process-Based (PB) models were configured and calibrated with training data to reduce root-mean squared error.
   Uncalibrated models used default configurations (PB0; see Winslow et al. 2016 for details) and no parameters were adjusted according to model fit with observations.
-  Deep Learning (DL) models were Long Short-Term Memory artificial recurrent neural network models which used training data to adjust model structure and weights for temperature predictions (Jia et al. 2019).
-  Process-Guided Deep Learning (PGDL) models were DL models with an added physical constraint for energy conservation as a loss term. These models were pre-trained with
-  uncalibrated Process-Based model outputs (PB0) before training on actual temperature observations.
+  Process-Guided Deep Learning (PGDL) models were deep learning models with an added physical constraint for energy conservation as a loss term. These models were pre-trained with
+  uncalibrated Process-Based model outputs (PB0) before training on actual temperature observations. PBall and PGDL models were transfered to other lakes with a meta transfer learning model
+  (PB-MTL; PGDL-MTL) and for PGDL transfers, an additional ensemble estimate was created based on the top nine source lakes (PGDL-MTL9).
   </p>
 
 cross-cites:
@@ -40,6 +40,12 @@ cross-cites:
        USGS Yeti Supercomputer
     pubdate: 2019
     link: https://doi.org/10.5066/F7D798MJ
+  -
+    authors: ['Jared D. Willard', 'Jordan S. Read', 'Alison P. Appling', 'Samantha K. Oliver', 'Xiaowei Jia', 'Vipin Kumar']
+    title: >-
+      Predicting Water Temperature Dynamics of Unmonitored Lakes with Meta Transfer Learning
+    pubdate: 2021
+    link: UNKNOWN
     
 entities:
   -
@@ -168,4 +174,12 @@ build-environment: >-
   The computing platform for generating data and metadata was x86_64-redhat-linux-gnu. R packages loaded into this environment: dplyr, version: 0.8.1; glmtools, version: 0.15.0; rLakeAnalyzer, version: 1.11.4; GLMr, version: 3.1.14; readr, version: 1.3.1;
   Yeti modules tools/nco-4.7.8-gnu; tools/netcdf-4.3.2-gnu
   For PGDL and DL predictions, the University of Minnesota Supercomputing Institute resources were used.
-  
+
+process-date: !expr format(Sys.time(),'%Y%m%d')
+data-name: weather data and ice flags (model inputs)
+file-format:  >-
+  a single .png image file, and 79 compressed zip files. There is no pbmtl_predictions_09_N45.50-47.00_W93.00-94.00.zip file because
+  none of the 305 target lakes fell into the spatial extent of group 09. _predictions_09 files exist for other predictions since they 
+  included the extended target lakes (PBMTL did not). 
+
+

@@ -248,9 +248,15 @@ entities:
 build-environment: >-
   This dataset was generated using open source tools available in the R programming language (R version 3.6.3 (2020-02-29)).
   The computing platform for generating data and metadata was x86_64-apple-darwin15.6.0.
-  R packages loaded into this environment: reticulate, version: 1.13; dssecrets, version: 0.1.4; purrr, version: 0.3.3; RcppCNPy, version: 0.2.10; sbtools, version: 1.1.7; RJSONIO, version: 1.3-1.2; feather, version: 0.3.4; sf, version: 0.8-1; glmtools, version: 0.15.0; rLakeAnalyzer, version: 1.11.4.1; GLMr, version: 3.1.16; stringr, version: 1.4.0; lwgeom, version: 0.1-7; httr, version: 1.4.1; rgdal, version: 1.4-4; sp, version: 1.4-1; dataRetrieval, version: 2.7.6; readr, version: 1.3.1; meddle, version: 0.0.10; mapdata, version: 2.3.0; maps, version: 3.3.0; tidyr, version: 1.0.2; dplyr, version: 0.8.4; whisker, version: 0.4; yaml, version: 2.2.1; scipiper, version: 0.0.17.
+  R packages loaded into this environment: reticulate, version: 1.13; dssecrets, version: 0.1.4; 
+  purrr, version: 0.3.3; RcppCNPy, version: 0.2.10; sbtools, version: 1.1.7; RJSONIO, version: 1.3-1.2; 
+  feather, version: 0.3.4; sf, version: 0.8-1; glmtools, version: 0.15.0; rLakeAnalyzer, version: 1.11.4.1; 
+  GLMr, version: 3.1.16; stringr, version: 1.4.0; lwgeom, version: 0.1-7; httr, version: 1.4.1; 
+  rgdal, version: 1.4-4; sp, version: 1.4-1; dataRetrieval, version: 2.7.6; readr, version: 1.3.1; 
+  meddle, version: 0.0.10; mapdata, version: 2.3.0; maps, version: 3.3.0; tidyr, version: 1.0.2; 
+  dplyr, version: 0.8.4; whisker, version: 0.4; yaml, version: 2.2.1; scipiper, version: 0.0.17.
 
-process-date: 20190706
+process-date: !expr format(Sys.time(),'%Y%m%d')
 indirect-spatial: U.S.A.
 latitude-res: 0.1
 longitude-res: 0.1
