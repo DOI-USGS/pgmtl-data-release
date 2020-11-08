@@ -451,6 +451,8 @@ reshape_sparse_PGDL_csv <- function(outfile, infile){
     pivot_longer(cols = ends_with(' obs median'), names_to = 'n_prof_name', values_to = "median_rmse") %>% 
     mutate(n_prof = as.numeric(str_remove(n_prof_name, ' obs median'))) %>% 
     select(site_id, n_prof, median_rmse) %>% 
+    # remove models that were not evaluated because they didn't exist. Jared set these as RMSE = 0:
+    filter(median_rmse > 0) %>% 
     write_csv(path = outfile)
 }
 

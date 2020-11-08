@@ -22,12 +22,15 @@ cross-cites:
 entities:
   -
     data-name: all_MTL_RMSE_predictions.csv
-    data-description: MTL predictions for all 145 source lakes and 305 target lakes for PB and PGDL transfers
+    data-description: >- 
+      MTL predictions for all 145 source lakes and 305 target lakes for PB and PGDL transfers and actual performance of these
+      transfered models. This file also includes predicted rank of models and actual rank of models. 
     attributes:
     -
       attr-label: target_id
       attr-def: >-
-        Lake identification number for this dataset. Is the Prmnn_I prefixed with source, as "nhd_{Prmnn_I}". The "target" lake being predicted
+        Lake identification number for this dataset. Is the Prmnn_I prefixed with source, as "nhd_{Prmnn_I}". 
+        Prmnn_I is an attribute in the national hydrography dataset. The "target" lake being predicted. 
       attr-defs: >-
         http://nhd.usgs.gov/
       data-min: NA
@@ -36,7 +39,8 @@ entities:
     -
       attr-label: source_id
       attr-def: >-
-        Lake identification number for this dataset. Is the Prmnn_I prefixed with source, as "nhd_{Prmnn_I}". The "source" lake being transfered to predict temperatures of the target lake
+        Lake identification number for this dataset. Is the Prmnn_I prefixed with source, as "nhd_{Prmnn_I}". 
+        Prmnn_I is an attribute in the national hydrography dataset. The "source" lake being transfered to predict temperatures of the target lake
       attr-defs: >-
         http://nhd.usgs.gov/
       data-min: NA

@@ -1,5 +1,5 @@
 title: >-
-  Predicting Water Temperature Dynamics of Unmonitored Lakes with Meta Transfer Learning: 3 Model configurations (Provisional Data Release)
+  Predicting Water Temperature Dynamics of Unmonitored Lakes with Meta Transfer Learning: 3 Process model configurations (Provisional Data Release)
 
 abstract: >-
   <p>These data are preliminary or provisional and are subject to revision. They are being provided to meet the need for timely best science. 
@@ -24,7 +24,7 @@ cross-cites:
 entities:
   -
     data-name: pb0_config.json
-    data-description: A JSON file containing the expert-chosen default parameters for each of the lakes in this study.
+    data-description: A JSON file containing the lake-specific parameters for each of the lakes in this study, which were not modified based on model performance.
     attributes:
     -
       attr-label: glm_setup
