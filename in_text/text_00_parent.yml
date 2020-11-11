@@ -1,16 +1,8 @@
 title: >-
-  Data release: Predicting Water Temperature Dynamics of Unmonitored Lakes with Meta Transfer Learning (Provisional Data Release)
+  Data release: Predicting Water Temperature Dynamics of Unmonitored Lakes with Meta Transfer Learning
 
 abstract: >-
-  <p>These data are preliminary or provisional and are subject to revision. They are being provided to meet the need for timely best science. 
-  The data have not received final approval by the U.S. Geological Survey (USGS) and are provided on the condition that neither the USGS 
-  nor the U.S. Government shall be held liable for any damages resulting from the authorized or unauthorized use of the data.
-  <br/>
-  <br/>
-  Climate change and land use change have been shown to influence lake temperatures and water clarity in different ways. To better understand the diversity of lake responses to
-  climate change and give managers tools to manage individual lakes, we focused on improving prediction accuracy for daily water
-  temperature profiles in 2,332 lakes during 1980-2019.
-  <br/>The data are organized into these items:</p>
+  <p>The data are organized into these items:</p>
   <ol>
   <li><a href="https://www.sciencebase.gov/catalog/item/5ebe564782ce476925e44b26">Lake Information</a> - A lake metadata file and one shapefile of polygons for all 2,332 lakes in this study</li>
   <li><a href="https://www.sciencebase.gov/catalog/item/5ebe566a82ce476925e44b29">Observations</a> - Temperature observations for the 2,332 lakes used in this study</li>
@@ -18,6 +10,7 @@ abstract: >-
   <li><a href="https://www.sciencebase.gov/catalog/item/5ebe568182ce476925e44b2d">Model Inputs</a> - Data used to drive predictive models</li>
   <li><a href="https://www.sciencebase.gov/catalog/item/5ebe569582ce476925e44b2f">Model Predictions</a> - Predictions for water temperature</li>
   <li><a href="https://www.sciencebase.gov/catalog/item/5ebe577782ce476925e44b32">Model Evaluation</a> - Performance of models</li>
+  <br/>
   <br/>
   <p>This research was funded by the Department of the Interior Northeast and North Central Climate Adaptation Science Centers,
   a Midwest Glacial Lakes Fish Habitat Partnership grant through F&WS
