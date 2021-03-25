@@ -46,7 +46,9 @@ get_boxplot_stats <- function(data, boxplot_stat = c('min','max','lower','upper'
 }
 
 # ylim needs to be the gaps plus the max dot stacks for each one...
-png('~/Downloads/fancy_jared_plot.png', width = 9, height = 5.5, units = 'in', res = 230)
+setEPS()
+postscript('~/Downloads/Willard_WRR_.eps', width = 9, height = 5.5)
+#png('~/Downloads/fancy_jared_plot.png', width = 9, height = 5.5, units = 'in', res = 230)
 par(omi = c(0.01,0.01,0.01,0.01), mai = c(0.3, 1.6, 0, 0), mgp = c(3,0.2,0), xpd = TRUE)
 
 layout(matrix(c(7,7,7,7, 1:3, 8,8,8,8, 4:6), ncol = 2,byrow = F))
@@ -126,7 +128,7 @@ for (model_group in c('pb_group', 'pg_group')){
     polygon(c(top$low, top$low, top$high, top$high), c(y_mid_top-0.2, y_mid_top+0.2, y_mid_top+0.2, y_mid_top-0.2), 
             col = 'white')
     lines(c(top$med, top$med), c(y_mid_top+0.2, y_mid_top-0.2), lwd = 2, lend = 1)
-    points(top_pts, y = rep(y_mid_top, length(top_pts)), col = '#ca0020', pch = 16, cex = 1.1)
+    points(top_pts, y = rep(y_mid_top, length(top_pts)), col = '#c74c4c', pch = 16, cex = 1.1)
     top_outliers <- bot_high_pts %>% 
       filter(.data[[model_group]] == 'top', .data[[plot_var_name]] > top$max | .data[[plot_var_name]] < top$min) %>% 
       pull(.data[[plot_var_name]])
@@ -171,7 +173,7 @@ for (model_group in c('pb_group', 'pg_group')){
 
 
 us_counties_sf <- remake::fetch('us_counties_sf')
-plot_crs <- "+init=epsg:2811"
+plot_crs <- "+proj=lcc +lon_0=-90.85 +lat_1=43.94 +lat_2=46.77"
 all_lakes <- readRDS("../lake-temperature-model-prep/1_crosswalk_fetch/out/canonical_lakes_sf.rds") %>%
   st_transform(crs = plot_crs)
 
@@ -213,8 +215,8 @@ plot_mtl_tops <- function(type){
   plot_states <- group_by(us_counties_sf, state) %>% summarise() %>% filter(state %in% c('MN','WI','MI')) %>%
     st_geometry() %>% st_transform(crs = plot_crs)
 
-  source_col <- '#ca0020'
-  test_t_col <- '#0571b0'
+  source_col <- '#c74c4c'
+  test_t_col <- '#51afc2'
 
   par(mai = c(0,0,0,0), xaxs = 'i', yaxs = 'i')
 
@@ -247,15 +249,16 @@ plot_mtl_tops <- function(type){
     lat_lon_line <- geosphere::gcIntermediate(source_coords, target_coords, n = 100, addStartEnd = TRUE) %>%
       as.matrix() %>% st_linestring(dim = "XYZ") %>%
       st_sfc(crs = 'wgs84') %>%
-      st_transform(crs = 2811) %>%
-      plot(add = TRUE, col = '#00000033', lwd = 0.75)
+      st_transform(crs = plot_crs) %>%
+      plot(add = TRUE, col = 'grey70', lwd = 0.75)
 
   }
   plot_modeled_lakes(target_test_lakes, test_t_col)
   plot_modeled_lakes(source_lakes, source_col)
   box()
-  #message(paste(par('usr'), collapse = ' '))
-  text(1694114.4, 482064, pos = 2, labels = paste0(toupper(type), '-MTL'), cex = 2)
+  message(paste(par('usr'), collapse = ' '))
+  # 94% y, 99% x
+  text(615561.5, 5871343, pos = 2, labels = paste0(toupper(type), '-MTL'), cex = 2)
   
   usr <- par('usr')
   
