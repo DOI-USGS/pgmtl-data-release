@@ -2,11 +2,13 @@ title: >-
   Predicting Water Temperature Dynamics of Unmonitored Lakes with Meta Transfer Learning: 1 Lake information for 2,332 lakes
 
 abstract: >-
-  This dataset provides shapefile outlines of the 2,332 lakes that had temperature modeled as part of this study.
+  <p>This dataset provides shapefile outlines of the 2,332 lakes that had temperature modeled as part of this study.
   The format is a shapefile for all lakes combined (.shp, .shx, .dbf, and .prj files). A csv file of lake metadata is included, which includes lake metadata
   and all features that were considered for the meta transfer model (not all meta features were used).
   This dataset is part of a larger data release of lake temperature model inputs and outputs for 2,332 lakes in the U.S.
-  (https://doi.org/10.5066/P9I00WFR).
+  (https://doi.org/10.5066/P9I00WFR).</p>
+  </br>
+  <a href="https://www.sciencebase.gov/catalog/file/get/5ebe564782ce476925e44b26?f=__disk__ec%2F61%2F8c%2Fec618cbf056615cd9630c6a232e01630b93a8bd2&transform=1&allowOpen=true#Entity%20and%20Attribute%20Information">view attributes here</a>
 
 cross-cites:
   -
